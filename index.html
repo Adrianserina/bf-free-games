@@ -1,0 +1,1669 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Free Games — Bloodline Forge: The Awakened Saga™</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.75rem; }
+      :root{
+        --bg:#080503; --bg2:#0f0a06; --panel:#171009; --panel2:#1f150a; --panel3:#2a1c0e;
+        --line:#3d2c17; --line2:#2a1e10; --gold:#d9a441; --gold2:#f2c66d; --goldp:#ffe9b0;
+        --ember:#ff6a1a; --ember2:#e2601c; --emberd:#9c3a0d; --bone:#f3e8d0; --dim:#cbb894; --muted:#bfae8d; --faint:#9a8562;
+        --ok:#a8cf8f; --err:#ff9a7a; --r:16px;
+      }
+      *{box-sizing:border-box} html{scroll-behavior:smooth}
+      body{margin:0;background:var(--bg);color:var(--bone);font-family:"Alegreya Sans",system-ui,sans-serif;font-size:17px;line-height:1.6;overflow-x:hidden}
+      ::selection{background:var(--emberd);color:#fff}
+      .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+      a{color:inherit}
+
+      /* HUD - Launcher Bar */
+      .hud{position:sticky;top:0;z-index:60;background:rgba(8,5,3,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.55)}
+      .hud-inner{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+      .hud-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+      .hud-sigil{width:34px;height:34px;border:1.5px solid var(--gold);transform:rotate(45deg);border-radius:7px;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,rgba(242,198,109,.35),rgba(226,96,28,.12));flex:none}
+      .hud-sigil span{transform:rotate(-45deg);font-size:15px;line-height:1}
+      .hud-brand b{font-family:Cinzel,serif;letter-spacing:.14em;font-size:.78rem;color:var(--gold2);text-transform:uppercase;line-height:1.1;display:block}
+      .hud-brand small{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);display:block;margin-top:1px}
+      .hud-wallet{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,#2e1f0e,#171009);border:1px solid var(--gold);border-radius:999px;padding:6px 16px 6px 9px;box-shadow:inset 0 1px 0 rgba(255,233,176,.18),0 0 18px rgba(217,164,65,.12)}
+      .hud-wallet .shard-ic{width:22px;height:22px;flex:none;background:radial-gradient(circle at 35% 30%,var(--goldp),var(--ember) 78%);transform:rotate(45deg);border-radius:5px;box-shadow:0 0 14px rgba(255,106,26,.65)}
+      .hud-wallet b{font-size:1.08rem;color:var(--goldp);font-variant-numeric:tabular-nums}
+      .hud-wallet small{color:var(--faint);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+      .hud-pill{display:inline-flex;align-items:center;gap:7px;color:var(--dim);font-size:.92rem;white-space:nowrap;background:#0e0906;border:1px solid var(--line2);padding:6px 12px;border-radius:999px}
+      .hud-pill b{color:var(--gold2)}
+      .hud-prog{flex:1 1 200px;min-width:160px}
+      .hud-prog .prog-label{display:flex;justify-content:space-between;gap:10px;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+      .hud-prog .prog-label b{color:var(--gold2)}
+      .prog-track{height:9px;border-radius:999px;overflow:hidden;background:#0a0704;border:1px solid var(--line)}
+      .prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--emberd),var(--ember) 55%,var(--gold) 100%);box-shadow:0 0 14px rgba(255,106,26,.7);transition:width .8s ease}
+      .hud-nav{display:flex;gap:4px;margin-left:auto;align-items:center}
+      .hud-nav a{font-size:.86rem;font-weight:700;letter-spacing:.04em;color:var(--dim);text-decoration:none;padding:8px 11px;border-radius:999px}
+      .hud-nav a:hover{color:var(--goldp);background:rgba(217,164,65,.08)}
+      .hud-play{background:linear-gradient(180deg,#ffb42e,var(--ember) 135%);color:#1c0f02!important;font-weight:900;padding:10px 18px!important;border:1px solid #ffca7a;box-shadow:0 6px 20px rgba(255,106,26,.35)}
+
+      /* HERO - Cinematic */
+      .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:radial-gradient(1000px 520px at 50% 115%,rgba(255,106,26,.32),transparent 62%),radial-gradient(800px 340px at 85% -10%,rgba(217,164,65,.16),transparent 60%),radial-gradient(620px 280px at 6% -6%,rgba(156,58,13,.22),transparent 60%),linear-gradient(180deg,#120b06 0%,#080503 78%)}
+      .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(255,233,176,.07),transparent 70%);pointer-events:none}
+      .hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(180deg,transparent,var(--bg));pointer-events:none}
+      #embers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+      .hero-glow{position:absolute;left:50%;bottom:-120px;transform:translateX(-50%);width:680px;height:340px;background:radial-gradient(ellipse at center,rgba(255,106,26,.38),transparent 68%);filter:blur(10px);animation:pulseGlow 4.5s ease-in-out infinite;pointer-events:none}
+      @keyframes pulseGlow{0%,100%{opacity:.75;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.06)}}
+      .hero-inner{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:58px 22px 28px;text-align:center}
+      .eyebrow{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(217,164,65,.45);background:rgba(10,7,5,.55);backdrop-filter:blur(6px);padding:7px 14px;border-radius:999px;font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2)}
+      .eyebrow i{width:7px;height:7px;background:var(--ember);transform:rotate(45deg);display:block;box-shadow:0 0 10px var(--ember)}
+      h1{font-family:Cinzel,serif;font-weight:900;font-size:clamp(2.4rem,7vw,4.6rem);line-height:.98;letter-spacing:-.01em;margin:20px 0 10px;color:#fff;text-shadow:0 6px 40px rgba(255,106,26,.28)}
+      h1 .gold{color:var(--gold2);text-shadow:0 0 28px rgba(217,164,65,.35)}
+      .saga{font-family:Cinzel,serif;font-size:clamp(.82rem,2.4vw,1.05rem);letter-spacing:.28em;color:var(--gold);margin:0 0 18px;font-weight:700}
+      .lede{font-family:Alegreya,serif;font-size:clamp(1.08rem,2.4vw,1.32rem);color:#d8c6a3;max-width:720px;margin:0 auto 26px;line-height:1.55}
+      .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+      .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:900;text-decoration:none;border-radius:10px;padding:14px 26px;font-size:1rem;letter-spacing:.02em;transition:.18s}
+      .btn-primary{background:linear-gradient(180deg,#ffb42e,#ff6a1a 135%);color:#1c0f02;border:1px solid #ffca7a;box-shadow:0 10px 30px rgba(255,106,26,.42),inset 0 1px 0 rgba(255,255,255,.35)}
+      .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,106,26,.52)}
+      .btn-ghost{background:rgba(23,16,9,.72);color:var(--gold2);border:1px solid var(--gold)}
+      .btn-ghost:hover{background:#2a1c0e}
+      .hero-facts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+      .hero-facts span{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:7px 11px;border-radius:999px;color:#cbb894;font-size:.86rem}
+
+      /* Featured Spotlight */
+      .spotlight-wrap{max-width:1180px;margin:22px auto 0;padding:0 18px;position:relative;z-index:3}
+      .spotlight{position:relative;overflow:hidden;border:1px solid var(--gold);border-radius:20px;background:linear-gradient(105deg,#241708 0%,#171009 52%,#0f0a06 100%);display:grid;grid-template-columns:1.15fr .85fr;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,233,176,.08) inset}
+      .spotlight:before{content:"";position:absolute;inset:0;background:radial-gradient(520px 240px at 12% 110%,rgba(255,106,26,.28),transparent 65%);pointer-events:none}
+      .spot-copy{padding:28px 28px 26px;position:relative}
+      .spot-kicker{display:inline-flex;gap:8px;align-items:center;background:var(--ember);color:#fff;font-weight:900;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding:6px 10px;border-radius:999px}
+      .spot-copy h2{font-family:Cinzel,serif;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.05;margin:14px 0 8px;color:#fff}
+      .spot-copy h2 em{color:var(--gold2);font-style:normal}
+      .spot-copy p{color:var(--dim);margin:0 0 18px;max-width:520px;font-size:1rem}
+      .spot-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+      .spot-meta span{font-size:.82rem;border:1px solid var(--line);background:rgba(0,0,0,.28);padding:6px 9px;border-radius:999px;color:var(--goldp)}
+      .spot-art{min-height:220px;display:grid;place-items:center;background:radial-gradient(360px 200px at 50% 120%,rgba(255,106,26,.32),transparent 65%),linear-gradient(180deg,#1e150b,#0e0906);border-left:1px solid var(--line2);padding:22px}
+      .spot-art svg{filter:drop-shadow(0 18px 28px rgba(0,0,0,.45))}
+
+      .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+      section{padding:54px 0 6px}
+      .gold-divider{display:flex;align-items:center;gap:14px;margin:38px 0 0;color:var(--gold)}
+      .gold-divider:before,.gold-divider:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--gold));}
+      .gold-divider:after{background:linear-gradient(90deg,var(--gold),transparent)}
+      .gold-divider span{font-size:11px;transform:rotate(45deg);width:9px;height:9px;background:var(--gold);display:block;box-shadow:0 0 12px rgba(217,164,65,.6)}
+      .sec-head{text-align:left;margin-bottom:26px;display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}
+      .sec-head.center{text-align:center;justify-content:center}
+      .sec-head.center p{margin-left:auto;margin-right:auto}
+      .sec-head h2{font-family:Cinzel,serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.4rem);margin:0;color:#fff;line-height:1.05;letter-spacing:-.01em}
+      .sec-head p{color:var(--muted);margin:8px 0 0;max-width:620px;font-family:Alegreya,serif;font-size:1.08rem}
+      .sec-tag{font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);font-weight:800}
+
+      /* Reveal — fail-safe: content is visible by default, animation only enhances */
+      .reveal{opacity:1;transform:none}
+      .reveal.visible{animation:revealIn .65s ease both}
+      @keyframes revealIn{from{opacity:.25;transform:translateY(14px)}to{opacity:1;transform:none}}
+      @media(prefers-reduced-motion:reduce){.reveal.visible{animation:none}.hero-glow{animation:none}html{scroll-behavior:auto}}
+
+      /* Dashboard / Profile */
+      .dash{background:radial-gradient(760px 300px at 50% 130%,rgba(255,106,26,.14),transparent 65%),linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:0;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.42)}
+      .profile-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:24px 24px 20px;border-bottom:1px solid var(--line2);background:linear-gradient(90deg,rgba(217,164,65,.07),transparent 55%)}
+      .avatar{width:72px;height:72px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#3a2410,#120c07 70%);display:grid;place-items:center;box-shadow:0 0 0 6px rgba(217,164,65,.08),0 0 24px rgba(255,106,26,.22);font-size:28px}
+      .profile-head h2{font-family:Cinzel,serif;font-size:1.45rem;margin:0;color:#fff}
+      .profile-head .sub{color:var(--faint);font-size:.92rem;margin:2px 0 10px}
+      .rank-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+      .rank-badge{background:linear-gradient(180deg,#ffb42e,var(--ember));color:#1c0f02;font-weight:900;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px}
+      .rank-next{font-size:.84rem;color:var(--muted)}
+      .rank-track{height:8px;background:#0c0805;border:1px solid var(--line2);border-radius:999px;overflow:hidden;margin-top:8px;max-width:420px}
+      .rank-fill{height:100%;background:linear-gradient(90deg,var(--ember),var(--gold));width:0%;transition:width .8s}
+      .copy-btn{display:inline-flex;align-items:center;gap:9px;background:transparent;color:var(--gold2);border:1px solid var(--gold);border-radius:10px;padding:11px 16px;font-weight:800;font-size:.94rem;cursor:pointer;font-family:inherit}
+      .copy-btn:hover{background:var(--gold);color:#1c0f02}.copy-btn.copied{background:var(--ok);border-color:var(--ok);color:#12230a}
+      .dash-body{padding:22px 24px 24px}
+      .stat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+      .stat-tile{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:18px 12px 14px;text-align:center}
+      .stat-tile .ic{color:var(--ember);display:flex;justify-content:center;margin-bottom:8px}
+      .stat-tile .val{font-family:Cinzel,serif;font-weight:900;font-size:1.85rem;line-height:1;color:var(--goldp);font-variant-numeric:tabular-nums}
+      .stat-tile .lbl{color:var(--faint);font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;margin-top:7px;font-weight:700}
+      .stat-tile.hero-tile{border-color:var(--gold);background:linear-gradient(180deg,#2a1a08,#140d05)}
+      .stat-tile.hero-tile .val{color:var(--gold2);font-size:2.15rem}
+      .empty-state{display:none;text-align:center;padding:26px 16px 6px}
+      .empty-state.show{display:block}
+      .empty-state .big{font-family:Cinzel,serif;font-size:1.25rem;color:var(--gold2);margin:0 0 8px}
+      .empty-state p{color:var(--muted);margin:0 auto 18px;max-width:480px}
+      .empty-state a{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,#ffb42e,var(--ember) 135%);color:#1c0f02;font-weight:900;text-decoration:none;padding:11px 22px;border-radius:10px;border:1px solid #ffca7a}
+      .bests{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+      .best-card{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:16px 18px}
+      .best-card h3{font-family:Cinzel,serif;font-size:.96rem;margin:0 0 10px;color:var(--gold2)}
+      .best-card ul{list-style:none;margin:0;padding:0}.best-card li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:.92rem;color:var(--muted);border-top:1px dashed var(--line2)} .best-card li:first-child{border-top:none}.best-card li b{color:var(--bone);white-space:nowrap}.best-card .none{color:var(--faint);font-size:.92rem;margin:0}
+
+      .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+      .panel{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:24px}
+      .panel h3{font-family:Cinzel,serif;font-size:1.15rem;margin:0 0 6px;color:#fff}
+      .panel .panel-sub{color:var(--muted);font-size:.94rem;margin:0 0 16px}.panel .panel-sub b{color:var(--gold2)}
+      .check-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+      .check-item{display:flex;gap:13px;align-items:flex-start;background:#0d0906;border:1px solid var(--line2);border-radius:12px;padding:14px}
+      .check-item .box{flex:none;width:26px;height:26px;margin-top:1px;border:1.5px solid var(--faint);border-radius:7px;display:grid;place-items:center;color:transparent}
+      .check-item.done{border-color:var(--gold)} .check-item.done .box{background:linear-gradient(180deg,#ffb42e,var(--ember));border-color:#ffca7a;color:#1c0f02}
+      .check-item .ci-body{flex:1;min-width:0}.check-item .ci-game{font-family:Cinzel,serif;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ember);font-weight:800;margin:0 0 2px}
+      .check-item .ci-text{margin:0;font-size:.96rem;color:var(--bone)} .check-item .ci-state{font-size:.82rem;color:var(--faint);margin:2px 0 0}.check-item.done .ci-state{color:var(--ok)}
+      .check-item a.ci-play{flex:none;align-self:center;color:var(--gold2);font-weight:800;font-size:.9rem;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 13px;display:inline-flex;align-items:center;min-height:2.75rem}
+      .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+      .ach{background:#0d0906;border:1px solid var(--line2);border-radius:12px;padding:16px 10px 12px;text-align:center}
+      .ach .medal{width:46px;height:46px;margin:0 auto 9px;transform:rotate(45deg);border:1.5px solid var(--gold);border-radius:9px;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,rgba(242,198,109,.28),rgba(255,106,26,.1) 70%);box-shadow:0 0 16px rgba(217,164,65,.22)}
+      .ach .medal span{transform:rotate(-45deg);color:var(--gold2);display:grid;place-items:center}
+      .ach .ach-name{font-size:.86rem;font-weight:800;color:var(--bone);line-height:1.3}.ach .ach-desc{font-size:.76rem;color:var(--faint);line-height:1.35;margin-top:3px}
+      .shelf-empty{color:var(--faint);font-size:.95rem;margin:0;text-align:center;padding:18px 8px;border:1px dashed var(--line);border-radius:12px}
+
+      /* Games */
+      .games{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 16px 38px rgba(0,0,0,.36);transition:transform .22s ease,border-color .22s,box-shadow .22s;position:relative}
+      .card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 26px 54px rgba(0,0,0,.52),0 0 0 1px rgba(217,164,65,.22)}
+      .card.featured-card{border-color:rgba(255,106,26,.65)}
+      .card-art{position:relative;height:230px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line2);overflow:hidden;background:radial-gradient(420px 190px at 50% 135%,rgba(255,106,26,.34),transparent 65%),radial-gradient(260px 140px at 85% -10%,rgba(217,164,65,.16),transparent 60%),#100a05}
+      .card-art:after{content:"";position:absolute;inset:auto 0 0 0;height:58px;background:linear-gradient(180deg,transparent,rgba(10,6,3,.72));pointer-events:none}
+      .card-art svg{transform:scale(1.12);filter:drop-shadow(0 14px 22px rgba(0,0,0,.4))}
+      .diff-badge{position:absolute;top:14px;right:14px;z-index:2;font-family:Cinzel,serif;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 11px;border-radius:999px;background:rgba(8,5,3,.86);border:1px solid var(--gold);color:var(--gold2);backdrop-filter:blur(6px)}
+      .diff-badge.hot{border-color:var(--ember);color:#ffb287}.diff-badge.calm{border-color:#7d9b6a;color:#bcd8a8}
+      .live-badge{position:absolute;top:14px;left:14px;z-index:2;background:var(--ember);color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:6px 9px;border-radius:999px;display:none;align-items:center;gap:6px}
+      .live-badge:before{content:"";width:6px;height:6px;background:#fff;border-radius:50%;box-shadow:0 0 8px #fff}
+      .card.featured-card .live-badge{display:inline-flex}
+      .card-body{padding:22px 22px 22px;display:flex;flex-direction:column;flex:1}
+      .card .kind{font-family:Cinzel,serif;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ember);margin:0 0 7px;font-weight:800}
+      .card h3{font-family:Cinzel,serif;font-size:1.55rem;font-weight:900;margin:0 0 9px;color:#fff;line-height:1.1}
+      .card p.desc{margin:0 0 15px;color:var(--muted);font-size:.97rem;line-height:1.55}
+      .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px}.tags span{font-size:.76rem;font-weight:700;color:var(--dim);border:1px solid var(--line2);background:#0d0906;padding:5px 8px;border-radius:999px}
+      .card .new-h{font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 6px;font-weight:800}
+      .card ul{list-style:none;margin:0 0 16px;padding:0}.card li{padding:7px 0 7px 24px;position:relative;font-size:.93rem;color:var(--bone);border-top:1px dashed var(--line2)} .card li:first-child{border-top:none}.card li:before{content:"";position:absolute;left:4px;top:14px;width:7px;height:7px;transform:rotate(45deg);background:var(--gold)}
+      .card .your-best{display:none;margin:0 0 15px;padding:10px 13px;background:#0d0906;border:1px solid var(--line2);border-radius:10px;font-size:.88rem;color:var(--muted)} .card .your-best.show{display:block}.card .your-best b{color:var(--gold2)}
+      .play-btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,#ffb42e,var(--ember) 135%);color:#1c0f02;font-weight:900;font-size:1.02rem;padding:14px 18px;border-radius:11px;text-decoration:none;border:1px solid #ffca7a;box-shadow:0 8px 24px rgba(255,106,26,.36);transition:.16s}
+      .play-btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(255,106,26,.5)}
+      .card .meta{margin-top:13px;padding-top:12px;border-top:1px solid var(--line2);display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--faint);font-size:.84rem}
+
+      .shards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      .shard-step{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:26px 22px}
+      .shard-step .ic{width:52px;height:52px;margin-bottom:15px;display:grid;place-items:center;border:1px solid var(--gold);border-radius:10px;transform:rotate(45deg);color:var(--gold2);background:#0d0906}.shard-step .ic svg{transform:rotate(-45deg)}
+      .shard-step h3{font-family:Cinzel,serif;font-size:1.06rem;margin:0 0 8px;color:#fff}.shard-step p{color:var(--muted);font-size:.95rem;margin:0}.shard-step p b{color:var(--gold2)}
+
+      .signup{margin-top:10px;background:radial-gradient(700px 260px at 50% 130%,rgba(255,106,26,.16),transparent 65%),linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:38px 28px 34px;text-align:center}
+      .signup h2{font-family:Cinzel,serif;font-size:clamp(1.45rem,3.6vw,2rem);margin:0 0 10px;color:#fff}
+      .signup p.sub{color:var(--muted);max-width:560px;margin:0 auto 22px;font-family:Alegreya,serif;font-size:1.06rem}
+      form.gate{display:flex;gap:10px;max-width:520px;margin:0 auto}
+      form.gate input[type="email"]{flex:1;min-width:0;background:#0c0805;color:var(--bone);border:1px solid var(--line);border-radius:10px;padding:12px 15px;font-size:1rem;font-family:inherit}
+      form.gate input[type="email"]:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+      form.gate button{background:linear-gradient(180deg,#ffb42e,var(--ember) 140%);color:#1c0f02;font-weight:900;font-size:1rem;border:1px solid #ffca7a;border-radius:10px;padding:12px 22px;cursor:pointer;white-space:nowrap;font-family:inherit}
+      .form-msg{min-height:1.5em;margin:12px auto 0;max-width:520px;font-size:.94rem}.form-msg.err{color:var(--err)}.form-msg.ok{color:var(--ok)}
+      .honest{margin:16px auto 0;max-width:540px;color:var(--faint);font-size:.86rem;border-top:1px dashed var(--line2);padding-top:15px}
+      .downloads{display:none;margin-top:30px;text-align:left}.downloads.show{display:block}
+      .downloads h3{font-family:Cinzel,serif;text-align:center;font-size:1.15rem;color:var(--gold2);margin:0 0 6px}
+      .dl-expiry{text-align:center;color:var(--gold2);font-size:.95rem;margin:0 auto 16px;max-width:560px}
+      .dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+      .dl{background:#0d0906;border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px}
+      .dl .dl-name{font-family:Cinzel,serif;font-weight:800;color:var(--bone)} .dl .dl-file{color:var(--faint);font-size:.84rem;margin-bottom:10px}
+      .dl a{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:transparent;color:var(--gold2);border:1px solid var(--gold);border-radius:9px;padding:11px 14px;text-decoration:none;font-weight:800}
+      .dl a:hover{background:var(--gold);color:#1c0f02}
+      .dl-note{text-align:center;color:var(--faint);font-size:.88rem;margin:16px auto 0;max-width:620px}.dl-note b{color:var(--dim)}
+
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+      .step{text-align:center;padding:10px;background:rgba(255,255,255,.015);border:1px solid var(--line2);border-radius:16px;padding:22px 16px}
+      .step .num{width:46px;height:46px;margin:0 auto 13px;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-weight:900;font-size:1.12rem;color:var(--gold2);border:1px solid var(--gold);transform:rotate(45deg);border-radius:7px}.step .num span{transform:rotate(-45deg)}
+      .step h3{font-family:Cinzel,serif;font-size:1.02rem;margin:0 0 6px;color:#fff}.step p{color:var(--muted);font-size:.94rem;margin:0}
+
+      .lore-line{font-family:Alegreya,serif;font-style:italic;font-size:clamp(1rem,2.2vw,1.18rem);color:var(--gold2);max-width:720px;margin:-12px auto 26px;min-height:1.6em;transition:opacity .45s ease}
+      .lore-line.fade{opacity:0}
+      .lore-tag{font-family:Alegreya,serif;font-style:italic;color:var(--gold2);font-size:1rem;margin:0 0 14px}
+      .rank-ladder{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;max-width:600px}
+      .rank-ladder li{font-size:.74rem;font-weight:700;letter-spacing:.04em;color:var(--faint);border:1px solid var(--line2);background:#0d0906;padding:5px 9px;border-radius:999px}
+      .rank-ladder li.current{color:#1c0f02;background:linear-gradient(180deg,#ffb42e,var(--ember));border-color:#ffca7a}
+      .beasts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+      .beast{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+      .beast h3{font-family:Cinzel,serif;font-size:1.12rem;margin:0 0 6px;color:var(--gold2)}
+      .beast p{color:var(--muted);font-size:.95rem;margin:0 0 12px;line-height:1.55}
+      .beast a{color:var(--gold2);font-weight:800;font-size:.9rem;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 13px;display:inline-flex;align-items:center;min-height:2.75rem}
+      .beast a:hover{border-color:var(--gold);color:var(--goldp)}
+
+      /* v5 — Shop, Rank, Wall, Tour, Challenge */
+      .note-line{color:var(--muted);font-size:.92rem;background:#0d0906;border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:14px 0 0}
+      .note-line b{color:var(--gold2)}
+      .wall-form{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 12px}
+      .wall-form input{flex:1;min-width:180px;background:#0c0805;color:var(--bone);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:1rem;font-family:inherit}
+      .wall-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+      .wall-list li{background:#0d0906;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;font-size:.93rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+      .wall-list li b{color:var(--gold2)}
+      .shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+      .shop-item{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+      .shop-item h4{font-family:Cinzel,serif;font-size:1rem;margin:0;color:var(--bone)}
+      .shop-item p{margin:0;color:var(--muted);font-size:.9rem;flex:1}
+      .shop-item .shop-kind{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);font-weight:800}
+      .buy-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--gold2);border:1px solid var(--gold);border-radius:9px;padding:10px 14px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.94rem}
+      .buy-btn:hover:not(:disabled){background:var(--gold);color:#1c0f02}
+      .buy-btn:disabled{opacity:.45;cursor:default}
+      .buy-btn.owned{background:var(--ok);border-color:var(--ok);color:#12230a}
+      .cap-track{height:10px;border-radius:999px;background:#0a0704;border:1px solid var(--line);overflow:hidden;margin-top:6px}
+      .cap-fill{height:100%;background:linear-gradient(90deg,var(--emberd),var(--ember),var(--gold));width:0%;transition:width .6s}
+      .cond-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+      .cond-list li{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+      .cond-list li .cbox{flex:none;width:19px;height:19px;margin-top:2px;border:1.5px solid var(--faint);border-radius:5px;display:grid;place-items:center;color:transparent;font-size:11px}
+      .cond-list li.done{color:var(--bone)} .cond-list li.done .cbox{background:linear-gradient(180deg,#ffb42e,var(--ember));border-color:#ffca7a;color:#1c0f02}
+      .claim-btn{margin-top:14px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(180deg,#ffb42e,var(--ember) 135%);color:#1c0f02;font-weight:900;padding:13px 18px;border-radius:10px;border:1px solid #ffca7a;cursor:pointer;font-family:inherit;font-size:1rem}
+      .claim-btn:disabled{opacity:.5;cursor:default;background:#2a1c0e;color:var(--muted);border-color:var(--line)}
+      .rank-bars{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+      .rank-bar-row .rb-label{display:flex;justify-content:space-between;font-size:.84rem;color:var(--muted);margin-bottom:5px}
+      .rank-bar-row .rb-label b{color:var(--gold2)}
+      .best-for{margin:0 0 10px;font-size:.92rem;color:var(--gold2)}
+      .loop-line{margin:0 0 14px;font-size:.92rem;color:var(--muted);border-top:1px dashed var(--line2);padding-top:10px}
+      .card[data-game="mini"]{border-top:3px solid var(--ember)}
+      .card[data-game="board"]{border-top:3px solid #7d9b6a}
+      .card[data-game="card"]{border-top:3px solid var(--gold)}
+      .friend-banner{display:none;background:linear-gradient(90deg,rgba(255,106,26,.16),rgba(217,164,65,.1));border:1px solid var(--gold);border-radius:14px;padding:16px 18px;margin:22px 0 0;color:var(--bone);font-size:.98rem}
+      .friend-banner.show{display:block}.friend-banner b{color:var(--gold2)}
+      .tour-overlay{position:fixed;inset:0;z-index:200;background:rgba(4,2,1,.82);display:none;align-items:center;justify-content:center;padding:18px}
+      .tour-overlay.show{display:flex}
+      .tour-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold);border-radius:20px;max-width:520px;width:100%;padding:30px 28px;box-shadow:0 30px 70px rgba(0,0,0,.6)}
+      .tour-card h3{font-family:Cinzel,serif;font-size:1.4rem;margin:0 0 10px;color:#fff}
+      .tour-card p{color:var(--muted);margin:0 0 18px}
+      .tour-card .tour-step-tag{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ember);font-weight:800}
+      .tour-actions{display:flex;gap:10px;flex-wrap:wrap}
+      /* v6 — Depth: Forge Level, Quests, Collection, Login, Missions, Season Pass */
+      .xp-track{height:22px;border-radius:999px;background:#0a0704;border:1px solid var(--line);overflow:hidden;margin:10px 0 6px}
+      .xp-fill{height:100%;background:linear-gradient(90deg,var(--emberd),var(--ember) 55%,var(--gold) 100%);box-shadow:0 0 16px rgba(255,106,26,.65);width:0%;transition:width .8s ease}
+      .level-num{font-family:Cinzel,serif;font-weight:900;font-size:3rem;line-height:1;color:var(--goldp)}
+      .level-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+      .next-teaser{background:#0d0906;border:1px dashed var(--gold);border-radius:12px;padding:13px 15px;margin-top:14px;font-size:.94rem;color:var(--muted)}
+      .next-teaser b{color:var(--gold2)}
+      .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px}
+      .cal-day{background:#0d0906;border:1px solid var(--line2);border-radius:12px;padding:12px 6px 10px;text-align:center}
+      .cal-day .cd-d{font-family:Cinzel,serif;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:800}
+      .cal-day .cd-r{font-size:.8rem;color:var(--bone);margin-top:5px;line-height:1.35;font-weight:700}
+      .cal-day.today{border-color:var(--gold);background:linear-gradient(180deg,#2a1a08,#140d05);box-shadow:0 0 16px rgba(217,164,65,.18)}
+      .cal-day.claimed{border-color:var(--ok)} .cal-day.claimed .cd-r{color:var(--ok)}
+      .cal-day.locked{opacity:.55}
+      .mission-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+      .mission-card{background:linear-gradient(180deg,#2a1a08,#140d05);border:1px solid var(--gold);border-radius:16px;padding:20px}
+      .mission-card h4{font-family:Cinzel,serif;font-size:1.05rem;margin:0 0 6px;color:#fff}
+      .mission-card p{margin:0 0 12px;color:var(--muted);font-size:.93rem}
+      .mission-card .m-reward{font-size:.86rem;color:var(--gold2);font-weight:800;margin:10px 0 0}
+      .qbar{height:9px;border-radius:999px;background:#0a0704;border:1px solid var(--line2);overflow:hidden;margin-top:8px}
+      .qbar-fill{height:100%;background:linear-gradient(90deg,var(--emberd),var(--ember),var(--gold));width:0%;transition:width .6s}
+      .qbar-label{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;color:var(--muted);margin-top:6px}
+      .qbar-label b{color:var(--gold2)}
+      .quest-group-h{font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin:22px 0 12px;letter-spacing:.04em}
+      .quest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+      .quest-card{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column}
+      .quest-card h4{font-family:Cinzel,serif;font-size:.98rem;margin:0 0 5px;color:var(--bone)}
+      .quest-card p{margin:0;color:var(--muted);font-size:.88rem;flex:0 0 auto}
+      .quest-card .q-reward{font-size:.84rem;color:var(--gold2);font-weight:800;margin-top:10px}
+      .quest-card .buy-btn{margin-top:12px}
+      .quest-card.complete{border-color:var(--gold)}
+      .coll-overall{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#0d0906;border:1px solid var(--gold);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+      .coll-overall .co-num{font-family:Cinzel,serif;font-weight:900;font-size:2.2rem;color:var(--goldp);line-height:1}
+      .coll-cats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+      .coll-cat{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:20px}
+      .coll-cat h3{font-family:Cinzel,serif;font-size:1.05rem;margin:0 0 4px;color:#fff}
+      .coll-cat .cc-sub{color:var(--muted);font-size:.88rem;margin:0 0 12px}
+      .coll-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+      .coll-list li{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;color:var(--muted);border-top:1px dashed var(--line2);padding-top:7px}
+      .coll-list li:first-child{border-top:none;padding-top:0}
+      .coll-list li b{color:var(--bone);white-space:nowrap}
+      .coll-list li.locked{opacity:.62} .coll-list li.locked b{color:var(--faint)}
+      .card-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:7px;margin-top:12px}
+      .ctile{border:1px solid var(--line2);border-radius:9px;background:#0d0906;padding:9px 5px 7px;text-align:center;font-size:.66rem;line-height:1.3;color:var(--muted);min-height:64px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+      .ctile .ct-n{font-family:Cinzel,serif;font-weight:800;font-size:.72rem;color:var(--gold2)}
+      .ctile.locked{opacity:.5} .ctile.locked .ct-n{color:var(--faint)}
+      .season-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+      .tier{background:#0d0906;border:1px solid var(--line2);border-radius:12px;padding:14px 14px 12px}
+      .tier.reached{border-color:var(--gold)}
+      .tier .t-n{font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);font-weight:800}
+      .tier .t-r{font-size:.9rem;color:var(--bone);font-weight:700;margin:4px 0 2px;line-height:1.4}
+      .tier .t-x{font-size:.78rem;color:var(--faint)}
+      .tier .buy-btn{margin-top:10px;width:100%;padding:8px 10px;font-size:.86rem}
+      /* v7 — Forge Store: tokens, merch, battle packs, gear, premium pass */
+      .hud-wallet.tokens{border-color:var(--ember);box-shadow:inset 0 1px 0 rgba(255,233,176,.18),0 0 18px rgba(255,106,26,.16)}
+      .hud-wallet .token-ic{width:22px;height:22px;flex:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--goldp),var(--gold) 55%,var(--emberd));box-shadow:0 0 12px rgba(217,164,65,.55);display:grid;place-items:center;color:#1c0f02;font-size:11px;font-weight:900}
+      .store-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+      .pack-card{background:linear-gradient(180deg,#2a1a08,#140d05);border:1px solid var(--gold);border-radius:16px;padding:20px;display:flex;flex-direction:column}
+      .pack-card h4{font-family:Cinzel,serif;font-size:1.08rem;margin:0 0 4px;color:#fff}
+      .pack-card .pack-tag{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);font-weight:800}
+      .pack-card p{margin:0 0 10px;color:var(--muted);font-size:.9rem}
+      .pack-contents{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:5px}
+      .pack-contents li{font-size:.9rem;color:var(--bone);padding-left:20px;position:relative}
+      .pack-contents li:before{content:"";position:absolute;left:3px;top:9px;width:6px;height:6px;transform:rotate(45deg);background:var(--gold)}
+      .pack-buy{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+      .gear-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+      .gear-item{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+      .gear-item h4{font-family:Cinzel,serif;font-size:1rem;margin:0;color:var(--bone)}
+      .gear-item p{margin:0;color:var(--muted);font-size:.9rem;flex:1}
+      .gear-item .shop-kind{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);font-weight:800}
+      .gear-actions{display:flex;gap:8px;flex-wrap:wrap}
+      .gear-actions .buy-btn{flex:1;min-width:130px}
+      .loadout{background:#0d0906;border:1px dashed var(--gold);border-radius:12px;padding:13px 15px;margin-top:14px;font-size:.94rem;color:var(--muted)}
+      .loadout b{color:var(--gold2)}
+      .token-pack{background:#0d0906;border:1px solid var(--line2);border-radius:14px;padding:18px;text-align:center;display:flex;flex-direction:column;gap:4px}
+      .token-pack .tp-amt{font-family:Cinzel,serif;font-weight:900;font-size:1.7rem;color:var(--goldp);line-height:1}
+      .token-pack .tp-name{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:800}
+      .token-pack .tp-price{font-size:1.05rem;color:var(--bone);font-weight:800}
+      .token-pack .buy-btn{margin-top:8px}
+      .merch-panel{background:radial-gradient(700px 260px at 50% 130%,rgba(255,106,26,.18),transparent 65%),linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold);border-radius:18px;padding:26px;display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center}
+      .merch-panel h3{font-family:Cinzel,serif;font-size:1.3rem;margin:0 0 8px;color:#fff}
+      .merch-panel p{color:var(--muted);margin:0}
+      .tier.premium{border-color:rgba(217,164,65,.55);background:linear-gradient(180deg,#241708,#120c05)}
+      .tier .t-lock{font-size:.8rem;color:var(--gold2);margin-top:8px;font-weight:700}
+      @media(max-width:980px){.store-grid{grid-template-columns:1fr 1fr}.merch-panel{grid-template-columns:1fr}}
+      @media(max-width:560px){.store-grid,.gear-grid{grid-template-columns:1fr}}
+      @media(max-width:980px){.quest-grid,.mission-grid{grid-template-columns:1fr 1fr}.season-grid{grid-template-columns:repeat(3,1fr)}.cal-grid{grid-template-columns:repeat(4,1fr)}}
+      @media(max-width:860px){.shop-grid{grid-template-columns:1fr}.coll-cats{grid-template-columns:1fr}}
+      @media(max-width:560px){.quest-grid,.mission-grid,.season-grid{grid-template-columns:1fr}.cal-grid{grid-template-columns:repeat(2,1fr)}}
+      @media(max-width:860px){.beasts{grid-template-columns:1fr}}
+      footer{margin-top:64px;border-top:1px solid var(--line);background:linear-gradient(180deg,#0c0805,#060403)}
+      .foot-inner{max-width:1180px;margin:0 auto;padding:36px 18px 28px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+      .foot-inner .fname{font-family:Cinzel,serif;color:var(--gold2);letter-spacing:.06em;font-size:1rem;margin:0 0 8px;font-weight:900}
+      .foot-inner p{color:var(--faint);font-size:.9rem;margin:0 0 8px;line-height:1.55}
+      .foot-col h4{font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+      .foot-col a{display:block;color:var(--dim);text-decoration:none;font-size:.92rem;padding:5px 0}.foot-col a:hover{color:var(--goldp)}
+      .foot-bottom{border-top:1px solid var(--line2);padding:16px 18px;text-align:center;color:#6f5f45;font-size:.84rem;max-width:1180px;margin:0 auto}
+
+      @media(max-width:980px){.stat-grid{grid-template-columns:repeat(3,1fr)}.stat-tile.hero-tile{grid-column:span 3}.spotlight{grid-template-columns:1fr}.spot-art{border-left:none;border-top:1px solid var(--line2);min-height:190px}}
+      @media(max-width:860px){.games,.dl-grid,.steps,.shards-grid,.bests,.duo{grid-template-columns:1fr}.card-art{height:190px}.profile-head{grid-template-columns:auto 1fr}.copy-btn{grid-column:1/-1;justify-content:center}.foot-inner{grid-template-columns:1fr}.hud-nav a:not(.hud-play){display:none}}
+      @media(max-width:520px){.stat-grid{grid-template-columns:repeat(2,1fr)}.stat-tile.hero-tile{grid-column:span 2}form.gate{flex-direction:column}form.gate button{width:100%}.hero-inner{padding:42px 16px 22px}.check-item{flex-wrap:wrap}.avatar{width:58px;height:58px;font-size:22px}}
+    </style>
+  </head>
+  <body>
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-inner">
+        <a class="hud-brand" href="#top" aria-label="Forge Lobby home">
+          <span class="hud-sigil"><span>◆</span></span>
+          <span><b>Forge Lobby</b><small>Bloodline Forge</small></span>
+        </a>
+        <span class="hud-wallet" title="Fragments of the Living Sigil. Spent in the Forge. Earned in the Trials.">
+          <span class="shard-ic" aria-hidden="true"></span>
+          <b id="hud-shards">0</b><small>Ember Shards of the First Spark</small>
+        </span>
+        <span class="hud-wallet tokens" title="Forge Tokens — the premium currency. Earned in-game now; token packs go on sale with the December launch.">
+          <span class="token-ic" aria-hidden="true">◆</span>
+          <b id="hud-tokens">0</b><small>Forge Tokens</small>
+        </span>
+        <span class="hud-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="color:var(--ember)"><path d="M12 2c1 4-3 5.5-3 9a3.2 3.2 0 0 0 6.4 0c0-1-.5-1.9-1.2-2.7 2.3 1.2 3.8 3.3 3.8 5.7A6 6 0 0 1 6 13.5C6 8 11 6.5 12 2z"/></svg>
+          Streak <b id="hud-streak">0</b>
+        </span>
+        <span class="hud-pill" title="Streak multiplier on daily challenge rewards: 3-day streak ×1.5, 7-day streak ×2">
+          Reward <b id="hud-mult">×1</b>
+        </span>
+        <div class="hud-prog">
+          <div class="prog-label"><span>Daily challenges</span><b id="prog-text">0 / 3</b></div>
+          <div class="prog-track" role="progressbar" aria-label="Daily challenges completed" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+        </div>
+        <nav class="hud-nav" aria-label="Lobby">
+          <a href="#dashboard">Record</a>
+          <a href="#level-h">Level</a>
+          <a href="#missions-h">Missions</a>
+          <a href="#quests-h">Quests</a>
+          <a href="#collection-h">Collection</a>
+          <a href="#daily-h">Today</a>
+          <a href="#shop-h">Shop</a>
+          <a href="#store-h">Store</a>
+          <a href="#rank-h">Rank</a>
+          <a href="#games-h">Games</a>
+          <a href="#bestiary-h">Bestiary</a>
+          <a class="hud-play" href="#games-h">▶ Play now</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <header class="hero" id="top">
+      <canvas id="embers" aria-hidden="true"></canvas>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <span class="eyebrow"><i></i> Official Free Games Hub <i></i></span>
+        <h1>Enter the <span class="gold">Forge.</span><br/>Play the Saga.</h1>
+        <p class="saga">BLOODLINE FORGE: THE AWAKENED SAGA™</p>
+        <p class="lede">A full game lobby for the saga — three complete browser games, one shared Ember Shards of the First Spark wallet, daily challenges, and a record that grows every time you play. No install. No account. Just play.</p>
+        <p class="lore-line" id="lore-line" aria-live="polite">Lyra Vale carries the first spark into a world of ember and shadow.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#games-h">▶ &nbsp;Play free now</a>
+          <a class="btn btn-ghost" href="#dashboard">View my Forge Record</a>
+        </div>
+        <div class="hero-facts">
+          <span>✦ 3 complete games</span><span>◆ One shared wallet</span><span>🔥 Daily challenges</span><span>🏆 Achievements shelf</span><span>✓ Web versions never expire</span>
+        </div>
+      </div>
+
+      <!-- FEATURED ROTATION / TODAY'S SPOTLIGHT -->
+      <div class="spotlight-wrap">
+        <article class="spotlight reveal" id="spotlight" aria-labelledby="spot-title">
+          <div class="spot-copy">
+            <span class="spot-kicker">★ Today's Featured Challenge</span>
+            <h2 id="spot-title">Today: <em id="spot-game-name">Forge Defense</em></h2>
+            <p id="spot-desc">Stand the wall — play a run of Forge Defense today and keep your streak alive. Featured game rotates daily so every door into the saga gets its day in the fire.</p>
+            <div class="spot-meta">
+              <span id="spot-reward">Reward focus: Daily completion + shards</span>
+              <span id="spot-status">Status: Not yet done today</span>
+              <span>Rotates at midnight</span>
+            </div>
+            <a class="btn btn-primary" id="spot-play" href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">Play featured game →</a>
+            <a class="btn btn-ghost" href="#daily-h" style="margin-left:8px">All today's challenges</a>
+          </div>
+          <div class="spot-art" aria-hidden="true" id="spot-art">
+            <svg width="210" height="170" viewBox="0 0 120 110" fill="none"><defs><radialGradient id="sg1" cx="50%" cy="35%"><stop offset="0%" stop-color="#ffe9b0"/><stop offset="55%" stop-color="#e2601c"/><stop offset="100%" stop-color="#7a2a08"/></radialGradient></defs><path d="M60 6 L94 22 V52 C94 78 79 94 60 102 C41 94 26 78 26 52 V22 Z" fill="#1e150b" stroke="#d9a441" stroke-width="2.5"/><path d="M60 26 C67 38 74 45 74 57 a14 14 0 1 1 -28 0 C46 45 53 38 60 26Z" fill="url(#sg1)"/><path d="M60 48 C63 53 66 56 66 61 a6 6 0 1 1 -12 0 C54 56 57 53 60 48Z" fill="#fff3c4"/></svg>
+          </div>
+        </article>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="friend-banner" id="friend-banner" role="status"></div>
+
+      <!-- DASHBOARD / PLAYER PROFILE -->
+      <section id="dashboard" aria-labelledby="dash-h" style="padding-top:36px;">
+        <div class="dash reveal">
+          <div class="profile-head">
+            <div class="avatar" aria-hidden="true">🔥</div>
+            <div>
+              <h2 id="dash-h">Your Forge Record — on this device</h2>
+              <p class="sub">Your real numbers across all three games, saved in this browser only. Small numbers are still your numbers — they are shown, never hidden.</p>
+              <div class="rank-row">
+                <span class="rank-badge" id="profile-rank">First Spark Bearer</span>
+                <span class="rank-next" id="rank-next">Play a game to start climbing</span>
+              </div>
+              <div class="rank-track" aria-hidden="true"><div class="rank-fill" id="rank-fill"></div></div>
+              <ul class="rank-ladder" id="rank-ladder" aria-label="Forge Rank ladder">
+                <li data-rank="Ember Spark">Ember Spark · 0</li>
+                <li data-rank="Bronze of the Forge">Bronze of the Forge · 250</li>
+                <li data-rank="Silver of the Sigil">Silver of the Sigil · 750</li>
+                <li data-rank="Gold of the Crown">Gold of the Crown · 1,500</li>
+                <li data-rank="Ember Lord">Ember Lord · 3,000</li>
+              </ul>
+            </div>
+            <button type="button" class="copy-btn" id="copy-stats">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copy-stats-label">Copy my stats</span>
+            </button>
+          </div>
+          <div class="dash-body">
+            <div class="stat-grid">
+              <div class="stat-tile hero-tile" title="Fragments of the Living Sigil. Spent in the Forge. Earned in the Trials."><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 21 12 12 22 3 12Z"/></svg></div><div class="val" id="stat-shards">0</div><div class="lbl">Ember Shards of the First Spark</div></div>
+              <div class="stat-tile" title="Forge Tokens — the premium currency. Earned in-game now; token packs go on sale with the December launch."><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l1.6 3.4L17 12l-3.4 1.6L12 17l-1.6-3.4L7 12l3.4-1.6z" fill="currentColor" stroke="none"/></svg></div><div class="val" id="stat-tokens">0</div><div class="lbl">Forge Tokens</div></div>
+              <div class="stat-tile"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13a1.2 1.2 0 0 0 0-2L8.8 3.9C8 3.4 7 4 7 4.8z"/></svg></div><div class="val" id="stat-played">0</div><div class="lbl">Games Played</div></div>
+              <div class="stat-tile"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M17 4H7v6a5 5 0 0 0 10 0V4z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-1.8 4-4 4M7 5H4a1 1 0 0 0-1 1c0 2.5 1.8 4 4 4"/></svg></div><div class="val" id="stat-wins">0</div><div class="lbl">Total Wins</div></div>
+              <div class="stat-tile"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4-3 5.5-3 9a3.2 3.2 0 0 0 6.4 0c0-1-.5-1.9-1.2-2.7 2.3 1.2 3.8 3.3 3.8 5.7A6 6 0 0 1 6 13.5C6 8 11 6.5 12 2z"/></svg></div><div class="val" id="stat-streak">0</div><div class="lbl">Current Streak</div></div>
+              <div class="stat-tile"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></div><div class="val" id="stat-winrate">—</div><div class="lbl">Win Rate</div></div>
+            </div>
+
+            <div class="empty-state" id="empty-state">
+              <p class="big">Just starting out — and that's the real record</p>
+              <p>The zeros above are honest: no game has reported in on this browser yet. Play any of the three games below and your shards, wins, streaks, and bests will appear here automatically.</p>
+              <a href="#games-h">Play your first game</a>
+            </div>
+            <p class="note-line"><b>Global leaderboards need a server — coming with the permanent home.</b> For now your record lives on your device. There are no public player counters on this hub, because there is no server counting players — only your own record, kept honestly.</p>
+
+            <div class="bests" id="bests">
+              <div class="best-card"><h3>Forge Defense — Bests</h3><div id="best-mini"><p class="none">No runs recorded yet.</p></div></div>
+              <div class="best-card"><h3>The Forge Road — Bests</h3><div id="best-board"><p class="none">No races recorded yet.</p></div></div>
+              <div class="best-card"><h3>Card Battler — Bests</h3><div id="best-card"><p class="none">No duels recorded yet.</p></div></div>
+            </div>
+
+            <div style="margin-top:18px">
+              <h3 style="font-family:Cinzel,serif;font-size:1.05rem;margin:0 0 4px;color:#fff">Forge Record Wall</h3>
+              <p style="color:var(--muted);font-size:.93rem;margin:0">Save a snapshot of your record under a name you choose. <b style="color:var(--gold2)">Saved on this device — not shared.</b> Nobody else can see this wall; it is yours alone.</p>
+              <form class="wall-form" id="wall-form">
+                <label for="wall-name" class="sr-only">Name for your record</label>
+                <input type="text" id="wall-name" maxlength="40" placeholder="Your forge name — e.g. Lyra of Grayhollow" autocomplete="off" />
+                <button type="submit" class="buy-btn">Save my record to the wall</button>
+              </form>
+              <p class="form-msg" id="wall-msg" role="status" aria-live="polite" style="margin:0 0 10px"></p>
+              <ul class="wall-list" id="wall-list"></ul>
+              <p class="shelf-empty" id="wall-empty">No saved records yet. Play, then pin your first record here.</p>
+            </div>
+          </div>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- FORGE LEVEL + LOGIN CALENDAR (v6 depth) -->
+      <section aria-labelledby="level-h" style="padding-top:6px">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Forge Level • Meta Progression</div><h2 id="level-h">Forge Level — 50 Levels of the Climb</h2><p>Every game you play and win across all three games earns XP toward one 50-level Forge Level, tracked <b style="color:var(--gold2)">on this device</b>. Level-ups pay shards, Forge Tokens, titles, glows, and Sigil Fragments — there is always a next unlock one game away.</p></div>
+        </div>
+        <div class="duo">
+          <div class="panel reveal">
+            <div class="level-head">
+              <div><div class="level-num" id="meta-level">1</div><div style="font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:800">Forge Level</div></div>
+              <div style="flex:1;min-width:200px">
+                <div class="rb-label" style="display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted)"><span id="meta-xp-text">0 XP</span><b id="meta-xp-next" style="color:var(--gold2)"></b></div>
+                <div class="xp-track" role="progressbar" aria-label="Forge Level XP progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meta-xp-bar"><div class="xp-fill" id="meta-xp-fill"></div></div>
+                <p style="margin:0;font-size:.86rem;color:var(--faint)">XP: +10 per game played · +25 per win · +50 per achievement · +60 per daily set claimed — plus quest, mission, and season rewards.</p>
+              </div>
+            </div>
+            <div class="next-teaser" id="meta-next">Next unlock: play a game to earn your first XP.</div>
+            <p class="form-msg" id="meta-msg" role="status" aria-live="polite"></p>
+            <button type="button" class="claim-btn" id="meta-claim" disabled>No level rewards waiting</button>
+            <p class="note-line" id="meta-note">XP is counted from your real record on this device — games played, wins, and achievements already on your Forge Record count toward your level.</p>
+          </div>
+          <div class="panel reveal">
+            <h3>7-Day Return Calendar</h3>
+            <p class="panel-sub">Come back on consecutive days to grow the reward — Day 3 brings a title, Day 7 a <b>Sigil Fragment</b>. Tracked by date <b>on this device</b>; miss a day and the calendar starts again at Day 1.</p>
+            <div class="cal-grid" id="cal-grid"></div>
+            <p class="form-msg" id="cal-msg" role="status" aria-live="polite"></p>
+            <button type="button" class="claim-btn" id="cal-claim">Claim today's reward</button>
+          </div>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- CROSS-GAME MISSIONS (v6 depth) -->
+      <section aria-labelledby="missions-h" style="padding-top:6px">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Cross-Game Missions • The Hours-Long Hook</div><h2 id="missions-h">One Forge, Three Fires</h2><p>These missions cannot be finished in one game — they send you across <b style="color:var(--gold2)">all three games</b>. Play the wall, the road, and the war-table in one day, win one of each in a week, and the Forge pays a bonus no single game can match.</p></div>
+        </div>
+        <div class="mission-grid" id="mission-grid"></div>
+        <div class="next-teaser" id="mission-bonus" style="margin-top:14px">Weekly bonus: claim both weekly missions to forge <b>+1 Sigil Fragment</b>.</div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- QUEST LOG (v6 depth) -->
+      <section aria-labelledby="quests-h" style="padding-top:6px">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Quest Log</div><h2 id="quests-h">Quests of the Forge</h2><p>Fourteen quests across daily, weekly, and monthly horizons. Every bar below reads your <b style="color:var(--gold2)">real shared stats on this device</b> — progress is earned in the games, never invented here. Finish a quest, claim its shards and XP.</p></div>
+        </div>
+        <h3 class="quest-group-h">Daily Quests — reset at midnight</h3>
+        <div class="quest-grid" id="quest-daily"></div>
+        <h3 class="quest-group-h">Weekly Quests — reset each week</h3>
+        <div class="quest-grid" id="quest-weekly"></div>
+        <h3 class="quest-group-h">Monthly Quests — the long road</h3>
+        <div class="quest-grid" id="quest-monthly"></div>
+        <p class="form-msg" id="quest-msg" role="status" aria-live="polite" style="margin-top:14px"></p>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- COLLECTION TRACKER (v6 depth) -->
+      <section aria-labelledby="collection-h" style="padding-top:6px">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Collection Tracker</div><h2 id="collection-h">The Collection</h2><p>Everything there is to gather in the saga, in one place — creatures, cards, titles, glows, and card backs, each with what it takes to unlock it. All tracked <b style="color:var(--gold2)">on this device</b>.</p></div>
+        </div>
+        <div class="coll-overall reveal">
+          <div class="co-num" id="coll-pct">0%</div>
+          <div style="flex:1;min-width:220px">
+            <div class="rb-label" style="display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted)"><span>Collection complete</span><b id="coll-count" style="color:var(--gold2)">0 / 0</b></div>
+            <div class="cap-track"><div class="cap-fill" id="coll-fill"></div></div>
+            <p style="margin:8px 0 0;font-size:.88rem;color:var(--faint)" id="coll-note">Play the games, finish quests, climb levels and season tiers — every unlock lands here.</p>
+          </div>
+        </div>
+        <div class="coll-cats" id="coll-cats"></div>
+        <div class="panel reveal" style="margin-top:14px">
+          <h3>Card Battler — 47 Canon Cards</h3>
+          <p class="panel-sub">Your first duel unlocks the 15-card starter set — the five saga spells and the ten Bestiary creatures. Every duel won after that unlocks one more card, up to all 47. Sealed cards show what is still out there waiting.</p>
+          <div class="rb-label" style="display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted)"><span>Cards unlocked</span><b id="coll-cards-count" style="color:var(--gold2)">0 / 47</b></div>
+          <div class="cap-track"><div class="cap-fill" id="coll-cards-fill"></div></div>
+          <div class="card-tiles" id="coll-cards"></div>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- DAILY + ACHIEVEMENTS -->
+      <section aria-labelledby="daily-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Daily • Achievements</div><h2 id="daily-h">Today at the Forge</h2><p>A fresh set of challenges every calendar day, and a shelf for everything you've earned along the way.</p></div>
+          <a class="btn btn-ghost" href="#games-h">Jump into a game →</a>
+        </div>
+        <div class="duo">
+          <div class="panel reveal">
+            <h3>Daily Challenges</h3>
+            <p class="panel-sub">One challenge per game, three conditions each, resetting at midnight — Forge Defense alternates between Silence the Bloodvine and The Glass Must Not Break across the week, so all four lore trials appear. Finish all three challenges to claim the daily reward: <b>50 shards × your streak multiplier</b> (3-day streak ×1.5, 7-day streak ×2 — currently <b id="daily-mult">×1</b>). <b id="daily-count">0 of 3 done today.</b></p>
+            <ul class="check-list" id="check-list"></ul>
+            <button type="button" class="claim-btn" id="claim-btn" disabled>Complete all 3 challenges to claim</button>
+          </div>
+          <div class="panel reveal">
+            <h3>Achievements Shelf</h3>
+            <p class="panel-sub">Six saga titles mark your climb — from First Spark Bearer to One Who Made the Glass Hum — earned as your Forge Record grows, alongside every game's achievements.</p>
+            <div class="shelf" id="shelf"></div>
+            <p class="shelf-empty" id="shelf-empty">No achievements yet. Win runs, races, and duels to start filling the shelf.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAMES -->
+      <section aria-labelledby="games-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Game Library</div><h2 id="games-h">Choose Your Battle</h2><p>Three doors into the saga — defend the Forge, race the Road, and duel at the war-table. Every game feeds the same wallet, streak, and record.</p></div>
+        </div>
+
+        <div class="games">
+          <article class="card reveal" data-game="mini">
+            <div class="card-art" aria-hidden="true">
+              <span class="live-badge">Featured today</span>
+              <span class="diff-badge hot">Difficulty · Rising</span>
+              <svg width="150" height="138" viewBox="0 0 120 110" fill="none"><defs><linearGradient id="a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a1c0e"/><stop offset="100%" stop-color="#120c07"/></linearGradient></defs><path d="M60 8 L92 22 V52 C92 76 78 92 60 100 C42 92 28 76 28 52 V22 Z" fill="url(#a1)" stroke="#d9a441" stroke-width="2.5"/><path d="M60 30 C66 40 72 46 72 56 a12 12 0 1 1 -24 0 C48 46 54 40 60 30Z" fill="#e2601c"/><path d="M60 48 C63 53 66 56 66 60 a6 6 0 1 1 -12 0 C54 56 57 53 60 48Z" fill="#f2c66d"/><path d="M38 96 h44" stroke="#9c3a0d" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="28" r="2" fill="#f2c66d" opacity=".7"/><circle cx="98" cy="34" r="2" fill="#e2601c" opacity=".8"/></svg>
+            </div>
+            <div class="card-body">
+              <p class="kind">Survival / Reflex — hold the line</p><h3>Forge Defense</h3>
+              <p class="desc">The creatures are coming for the Forge in Trials — and you're the last ward on the wall. Fast, pick-up-and-play arcade defense: hold the line, spend ember wisely, survive the Trial Boss.</p>
+              <p class="lore-tag">Hold the line with goldfire.</p>
+              <p class="best-for"><b>Best for:</b> quick reflex sessions and high-score chases.</p>
+              <p class="loop-line"><b>The loop:</b> survive a Trial → earn shards → pick 1 of 3 upgrades → face a harder Trial. Every 5th Trial is a boss — Crown Riders, Hollowmarked, or Seris Thorne herself.</p>
+              <div class="tags"><span>Story / Keeper / Nightmare</span><span>Boss every 5 waves</span><span>Upgrades</span></div>
+              <p class="new-h">In this build</p>
+              <ul><li><b>Difficulty tiers</b> — waves climb harder the longer you hold</li><li><b>Between-wave upgrades</b> — pick 1 of 3, build your wall</li><li><b>Combo + ranks</b> — chase S-rank runs and best wave</li><li><b>Daily challenge</b> — fresh defense goal every day</li></ul>
+              <p class="your-best" id="card-best-mini"></p>
+              <a class="play-btn" href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">▶ &nbsp;Play Forge Defense</a>
+              <div class="meta"><span>1 player</span><span>Arcade / defense</span><span>Quick sessions</span></div>
+            </div>
+          </article>
+
+          <article class="card reveal" data-game="board">
+            <div class="card-art" aria-hidden="true">
+              <span class="live-badge">Featured today</span>
+              <span class="diff-badge calm">Difficulty · Relaxed</span>
+              <svg width="180" height="138" viewBox="0 0 150 110" fill="none"><path d="M14 92 C40 92 34 62 58 60 C82 58 78 30 104 28 C118 27 128 22 136 14" stroke="#3a2a16" stroke-width="12" stroke-linecap="round"/><path d="M14 92 C40 92 34 62 58 60 C82 58 78 30 104 28 C118 27 128 22 136 14" stroke="#d9a441" stroke-width="2" stroke-dasharray="5 7" stroke-linecap="round"/><circle cx="14" cy="92" r="7" fill="#e2601c" stroke="#f2c66d" stroke-width="2"/><path d="M136 4 l3.5 7 7.7 1.1 -5.6 5.4 1.3 7.6 -6.9 -3.6 -6.9 3.6 1.3 -7.6 -5.6 -5.4 7.7 -1.1 Z" fill="#f2c66d" stroke="#d9a441" stroke-width="1.5"/><rect x="52" y="76" width="17" height="17" rx="3.5" transform="rotate(-12 60 84)" fill="#1e150b" stroke="#d9a441" stroke-width="2"/><circle cx="57" cy="82" r="1.8" fill="#f2c66d"/><circle cx="63" cy="88" r="1.8" fill="#f2c66d"/><circle cx="63" cy="80" r="1.8" fill="#f2c66d"/></svg>
+            </div>
+            <div class="card-body">
+              <p class="kind">Luck &amp; Progression Race — 40 tiles, exact landing wins</p><h3>The Forge Road</h3>
+              <p class="desc">A 40-tile race along the Forge Road to claim the Living Sigil. Roll, move, and brave event tiles that fling you forward or drag you back — while a rival champion races the same road. Only an exact landing on the Sigil tile wins.</p>
+              <p class="lore-tag">Race forty tiles from the Ember Gate to the Living Sigil.</p>
+              <p class="best-for"><b>Best for:</b> relaxed play, comeback drama, and champion collecting.</p>
+              <p class="loop-line"><b>The loop:</b> roll the die → ride event tiles → spend shards in the between-race shop → win the best-of-3 campaign as your chosen champion.</p>
+              <div class="tags"><span>Apprentice / Rival / Nightmare</span><span>Best-of-3</span><span>Shard Shop</span></div>
+              <p class="new-h">In this build</p>
+              <ul><li><b>Animated race</b> — tumbling die, tokens with trails, ember finish</li><li><b>Campaign + shop</b> — best-of-3 with between-race upgrades</li><li><b>Per-champion records</b> — win rates and last-10 form</li><li><b>Daily Race</b> — one road goal, refreshed daily</li></ul>
+              <p class="your-best" id="card-best-board"></p>
+              <a class="play-btn" href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">▶ &nbsp;Play The Forge Road</a>
+              <div class="meta"><span>1 player vs AI</span><span>Board / race</span><span>Full game in minutes</span></div>
+            </div>
+          </article>
+
+          <article class="card reveal" data-game="card">
+            <div class="card-art" aria-hidden="true">
+              <span class="live-badge">Featured today</span>
+              <span class="diff-badge">Difficulty · Deep</span>
+              <svg width="180" height="138" viewBox="0 0 150 110" fill="none"><rect x="18" y="26" width="52" height="72" rx="6" transform="rotate(-9 44 62)" fill="#1e150b" stroke="#9c3a0d" stroke-width="2"/><rect x="52" y="14" width="52" height="72" rx="6" fill="#241708" stroke="#d9a441" stroke-width="2.5"/><path d="M78 28 C82 35 86 39 86 45 a8 8 0 1 1 -16 0 C70 39 74 35 78 28Z" fill="#e2601c"/><path d="M64 62 h28 M64 70 h20" stroke="#8a7757" stroke-width="2.5" stroke-linecap="round"/><circle cx="94" cy="76" r="8" fill="#e2601c" stroke="#f2c66d" stroke-width="2"/><text x="94" y="80.5" text-anchor="middle" font-family="Cinzel, serif" font-size="11" font-weight="700" fill="#fff">7</text><rect x="88" y="34" width="46" height="64" rx="6" transform="rotate(10 111 66)" fill="#1e150b" stroke="#3a2a16" stroke-width="2"/></svg>
+            </div>
+            <div class="card-body">
+              <p class="kind">Competitive Skill Duel — outplay the Ashen Strategist</p><h3>Card Battler</h3>
+              <p class="desc">A Gwent-style duel of nerve across three rows — melee, ranged, and siege. Build from the saga's bloodlines, bluff a weak round to win the war, and outthink the Ashen Strategist in a best-of-three.</p>
+              <p class="lore-tag">Three rows. Two gems. One forge.</p>
+              <p class="best-for"><b>Best for:</b> thinkers, bluffers, and deck builders.</p>
+              <p class="loop-line"><b>The loop:</b> build a deck from 47 canon cards → duel the Ashen Strategist over three rounds → win two gems → climb the war-table ranks.</p>
+              <div class="tags"><span>47 canon cards</span><span>3 factions</span><span>Rank ladder</span></div>
+              <p class="new-h">In this build</p>
+              <ul><li><b>Real card frames</b> — faction art, animated strength, previews</li><li><b>Deck presets + meter</b> — Aggressive / Balanced / Control</li><li><b>Rank ladder</b> — First Spark Bearer to One Who Made the Glass Hum, per-faction rates</li><li><b>Daily challenge</b> — new war-table test every day</li></ul>
+              <p class="your-best" id="card-best-card"></p>
+              <a class="play-btn" href="https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y" target="_blank" rel="noopener">▶ &nbsp;Play Card Battler</a>
+              <div class="meta"><span>1 player vs AI</span><span>Cards / strategy</span><span>Deck building</span></div>
+            </div>
+          </article>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- FORGE RANK + SEASON -->
+      <section aria-labelledby="rank-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Long-Term Progression</div><h2 id="rank-h">Forge Rank — Season I: The First Spark</h2><p>One ladder across all three games: <b style="color:var(--gold2)">Ember Spark → Bronze of the Forge → Silver of the Sigil → Gold of the Crown → Ember Lord</b>. Rank score = total shards + 25 per win + 50 per achievement. Season I runs through <b style="color:var(--gold2)">December 31, 2026</b>.</p></div>
+        </div>
+        <div class="duo">
+          <div class="panel reveal">
+            <h3>Your climb</h3>
+            <p class="panel-sub">Current rank: <b id="rank-current">Ember Spark</b> · <span id="rank-next-note">Next rank: Bronze of the Forge at 250 — reward: the Bronze Forge Glow unlocks in the Shard Shop.</span></p>
+            <div class="rank-bars">
+              <div class="rank-bar-row"><div class="rb-label"><span>Total Ember Shards</span><b id="rb-shards-val">0</b></div><div class="cap-track"><div class="cap-fill" id="rb-shards-fill"></div></div></div>
+              <div class="rank-bar-row"><div class="rb-label"><span>Total wins (all games)</span><b id="rb-wins-val">0</b></div><div class="cap-track"><div class="cap-fill" id="rb-wins-fill"></div></div></div>
+              <div class="rank-bar-row"><div class="rb-label"><span>Collection — Bestiary games entered &amp; titles earned</span><b id="rb-coll-val">0%</b></div><div class="cap-track"><div class="cap-fill" id="rb-coll-fill"></div></div></div>
+            </div>
+            <p class="note-line"><b>Collection goals:</b> enter all three games to meet the Bestiary's creatures where they live, unlock all six saga titles on the Achievements Shelf, and own every cosmetic in the Shard Shop. Creature skins and card backs live in the Shop — collecting them all is the long game.</p>
+          </div>
+          <div class="panel reveal">
+            <h3>Season I — The First Spark</h3>
+            <p class="panel-sub">Ends <b>December 31, 2026</b>. When a season turns, your rank score and shard balance reset for the new season's climb — that is the honest shape of a seasonal ladder.</p>
+            <p class="note-line"><b>What carries over, always:</b> every cosmetic you own, your equipped titles, and your <b>Sigil Fragments</b> — the prestige currency. Fragments and cosmetics are never reset. What resets is only the seasonal score, so every season starts fair.</p>
+            <p class="note-line">Your Sigil Fragments: <b id="season-fragments">0</b> · Cosmetics owned: <b id="season-cosmetics">0</b></p>
+          </div>
+        </div>
+        <div class="panel reveal" style="margin-top:18px">
+          <h3>Season I Pass — 20 Tiers, Free</h3>
+          <p class="panel-sub">Every free tier is earned with the same XP that drives your Forge Level (200 XP per tier). A reward waits at <b>every</b> free tier: shards, Forge Tokens, titles, glows, card backs, and Sigil Fragments at Tiers 10, 15, and 20. Season I ends <b>December 31, 2026</b>. Your pass progress, on this device: <b id="season-xp-note">0 XP</b>.</p>
+          <p class="form-msg" id="season-msg" role="status" aria-live="polite"></p>
+          <div class="season-grid" id="season-grid"></div>
+          <h3 style="font-family:Cinzel,serif;font-size:1.05rem;margin:24px 0 6px;color:var(--gold2)">Premium Track — Season I</h3>
+          <p class="panel-sub"><b>Premium Season Pass — on sale soon with the December launch.</b> The premium track below is a preview: extra skins, card items, and Forge Tokens alongside the free tiers. Nothing on the premium track can be bought or claimed yet — and nobody has bought it. The free track above stays fully playable, start to finish, either way.</p>
+          <div class="season-grid" id="premium-grid"></div>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- SHARD SHOP + ECONOMY -->
+      <section aria-labelledby="shop-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Shard Economy</div><h2 id="shop-h">The Shard Shop</h2><p>Ember Shards of the First Spark are scarce on purpose — here is where they go. Everything you buy is stored on this device and shows in the games that read the shared forge-glow, card-back, and token settings.</p></div>
+        </div>
+        <div class="duo">
+          <div class="panel reveal">
+            <h3>Spend your shards</h3>
+            <p class="panel-sub">Wallet: <b id="shop-wallet">0</b> shards · Sigil Fragments: <b id="shop-fragments">0</b></p>
+            <div class="shop-grid" id="shop-grid"></div>
+            <p class="form-msg" id="shop-msg" role="status" aria-live="polite"></p>
+          </div>
+          <div class="panel reveal">
+            <h3>How Ember Shards Work</h3>
+            <p class="panel-sub">The economy, in plain words.</p>
+            <ul class="check-list" style="gap:8px">
+              <li class="check-item"><span class="ci-body"><p class="ci-text"><b style="color:var(--gold2)">Earning:</b> Forge Defense pays for Trials survived and bosses felled; The Forge Road pays for races finished and won; Card Battler pays for rounds and duels won. Daily challenges pay a 50-shard reward × your streak multiplier.</p></span></li>
+              <li class="check-item"><span class="ci-body"><p class="ci-text"><b style="color:var(--gold2)">Daily soft cap:</b> the first <b>300 shards earned each day</b> pay at full rate. Past the cap, games pay half — so farming one game all day is never the best route. Rotating games and finishing dailies is.</p><div class="rb-label" style="display:flex;justify-content:space-between;font-size:.84rem;color:var(--muted);margin-top:8px"><span>Earned today (tracked on this device)</span><b id="cap-val" style="color:var(--gold2)">0 / 300</b></div><div class="cap-track"><div class="cap-fill" id="cap-fill"></div></div></span></li>
+              <li class="check-item"><span class="ci-body"><p class="ci-text"><b style="color:var(--gold2)">Spending:</b> titles, card backs, road tokens, and forge glows in the Shop — plus one-use powers. Cosmetics are permanent and carry over every season.</p></span></li>
+              <li class="check-item"><span class="ci-body"><p class="ci-text"><b style="color:var(--gold2)">Sigil Fragments</b> are the prestige currency: 500 shards forge 1 Fragment in the Shop. Fragments never reset and mark a true Trial-Walker.</p></span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="duo" style="margin-top:18px">
+          <div class="panel reveal">
+            <h3>Your Weekly Forge Goal</h3>
+            <p class="panel-sub">This is <b>your</b> contribution this week — not a community total. A shared community goal needs a server, and this hub has none yet.</p>
+            <div class="rb-label" style="display:flex;justify-content:space-between;font-size:.9rem;color:var(--muted)"><span>Your shards earned this week</span><b id="week-val" style="color:var(--gold2)">0 / 500</b></div>
+            <div class="cap-track"><div class="cap-fill" id="week-fill"></div></div>
+            <p class="note-line" id="week-note">Reach 500 shards this week to unlock the <b>Weekly Ember Glow</b> cosmetic — free, earned, yours to keep.</p>
+          </div>
+          <div class="panel reveal">
+            <h3>Challenge a Friend</h3>
+            <p class="panel-sub">Copy a challenge code that carries today's date and your record, and send it to a friend however you like. They paste it here to see the same day's challenges and the stats you shared — dare them to match you.</p>
+            <button type="button" class="buy-btn" id="challenge-btn">Copy my challenge code</button>
+            <p class="form-msg" id="challenge-msg" role="status" aria-live="polite"></p>
+            <form class="wall-form" id="challenge-form" style="margin-top:4px">
+              <label for="challenge-input" class="sr-only">Paste a friend's challenge code</label>
+              <input type="text" id="challenge-input" placeholder="Paste a friend's challenge code" autocomplete="off" />
+              <button type="submit" class="buy-btn">Load challenge</button>
+            </form>
+            <p class="note-line">The code holds only what's in it — today's date and the numbers you see above. Nothing is uploaded anywhere.</p>
+          </div>
+        </div>
+        <div class="panel reveal" style="margin-top:18px">
+          <h3>Skins, Armor &amp; Upgrades</h3>
+          <p class="panel-sub">Forge glows, card backs, road-token skins, and champion skins — plus real gear: Keeper armor tiers for Forge Defense, champion armor for The Forge Road, and card frames for Card Battler. Buy with shards <b>or</b> Forge Tokens. Everything is stored in <b>bf-cosmetics</b> on this device, and equipping writes to the shared forge settings the games read — your loadout shows below.</p>
+          <div class="gear-grid" id="gear-grid"></div>
+          <div class="loadout" id="loadout">Your loadout: nothing equipped yet — buy a skin or armor piece above and it equips here.</div>
+          <p class="form-msg" id="gear-msg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- FORGE STORE (v7 monetization) -->
+      <section aria-labelledby="store-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Forge Store • Real Merch &amp; Premium Currency</div><h2 id="store-h">The Forge Store</h2><p>How this hub earns its keep, in plain sight: <b style="color:var(--gold2)">real merch you can buy today</b> in the official shop, and <b style="color:var(--gold2)">Forge Tokens</b> — a premium currency you earn in-game right now and will be able to buy when token packs go on sale with the December launch. No fake checkout, no pretend purchases — what is real is labelled real, and what is coming is labelled coming.</p></div>
+        </div>
+
+        <div class="merch-panel reveal">
+          <div>
+            <h3>Real Merch — Wear the Saga</h3>
+            <p>The official Bloodline Forge shop on Fourthwall carries the real thing: creature hoodies, prints, a mug, and the bookplate pack. Orders, payment, and shipping are handled by Fourthwall — this button takes you straight there.</p>
+          </div>
+          <div style="text-align:center">
+            <a class="btn btn-primary" href="https://bloodline-forge-shop.fourthwall.com/" target="_blank" rel="noopener" style="width:100%">Shop real merch →</a>
+            <p style="font-size:.84rem;color:var(--faint);margin:10px 0 0">bloodline-forge-shop.fourthwall.com</p>
+          </div>
+        </div>
+
+        <div class="panel reveal" style="margin-top:18px">
+          <h3>Forge Tokens — the Premium Currency</h3>
+          <p class="panel-sub">Your balance: <b id="store-tokens">0</b> Forge Tokens. Tokens buy battle packs and premium gear alongside shards. <b>How to earn them now:</b> Forge Level level-ups (+5 per level, +25 on every fifth level), quest claims (+3) and mission claims (+5), and Day 7 of the return calendar (+25). Slow by design — tokens are the rare currency of the Forge.</p>
+          <div class="store-grid" id="token-packs"></div>
+          <p class="note-line"><b>On sale soon — real-money token packs go live with the December launch; for now earn tokens in-game.</b> The prices shown are the planned launch prices. There is no checkout yet — when packs go live they will be sold through a real payment page, never a fake one.</p>
+        </div>
+
+        <div class="panel reveal" style="margin-top:18px">
+          <h3>Battle Packs</h3>
+          <p class="panel-sub">Bundles of card items, skins, titles, and Sigil Fragments — contents listed in full before you buy, one of each pack per season. Pay with Forge Tokens or the large shard price; everything lands in your collection on this device the moment you buy.</p>
+          <div class="store-grid" id="pack-grid"></div>
+          <p class="form-msg" id="pack-msg" role="status" aria-live="polite"></p>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- BESTIARY -->
+      <section aria-labelledby="bestiary-h">
+        <div class="sec-head reveal">
+          <div><div class="sec-tag">Bestiary</div><h2 id="bestiary-h">Creatures of the Saga</h2><p>Ten canon creatures of Bloodline Forge: The Awakened Saga™ — know them here, then meet them in the games.</p></div>
+        </div>
+        <div class="beasts">
+          <article class="beast reveal"><h3>Nightscale Drake</h3><p>Frost-breath drake whose scales drink the light — its chill can freeze a whole board where it stands.</p><a href="https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y" target="_blank" rel="noopener">Appears in Card Battler →</a></article>
+          <article class="beast reveal"><h3>Bloodvine Serpent</h3><p>In the wild only a snake. In Crown hands it is policy — the Crown does not hunt. It cultivates.</p><a href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">Appears in Forge Defense →</a></article>
+          <article class="beast reveal"><h3>Thornjaw</h3><p>Double-hinged maw that unmakes what it catches — watch for the charge before it snaps shut.</p><a href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">Appears in Forge Defense →</a></article>
+          <article class="beast reveal"><h3>Glasshound</h3><p>Fast, fragile, and born of humming glass — one clean strike, if it lands first.</p><a href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">Appears in Forge Defense →</a></article>
+          <article class="beast reveal"><h3>Boneharrow</h3><p>The Unburied Dead — dragged back from the discard once, because the grave would not keep it.</p><a href="https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y" target="_blank" rel="noopener">Appears in Card Battler →</a></article>
+          <article class="beast reveal"><h3>Lumen Moth</h3><p>Small wings, bright truth — it reveals what hands and roads would rather keep hidden.</p><a href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">Appears in The Forge Road →</a></article>
+          <article class="beast reveal"><h3>Hollow Stag</h3><p>It gives itself so the others stand stronger — a sacrifice that lifts all who remain.</p><a href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">Appears in The Forge Road →</a></article>
+          <article class="beast reveal"><h3>Storm Seraph</h3><p>Six wings over the war-table — when it descends, the board clears in stormlight.</p><a href="https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y" target="_blank" rel="noopener">Appears in Card Battler →</a></article>
+          <article class="beast reveal"><h3>Mireheart Eel</h3><p>It feeds where the mire runs deepest, stealing life — and shards — with every bite.</p><a href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">Appears in The Forge Road →</a></article>
+          <article class="beast reveal"><h3>Moonwraith</h3><p>Ethereal and unbowed — it passes through guard and block as if they were mist.</p><a href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">Appears in The Forge Road →</a></article>
+        </div>
+        <div class="gold-divider" aria-hidden="true"><span></span></div>
+      </section>
+
+      <!-- HOW SHARDS WORK -->
+      <section aria-labelledby="shards-h">
+        <div class="sec-head center reveal"><div><div class="sec-tag">Shared Progression</div><h2 id="shards-h" title="Fragments of the Living Sigil. Spent in the Forge. Earned in the Trials.">How Ember Shards of the First Spark Work</h2><p>One wallet for the whole saga — in plain words.</p></div></div>
+        <div class="shards-grid">
+          <div class="shard-step reveal"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4-3 5.5-3 9a3.2 3.2 0 0 0 6.4 0c0-1-.5-1.9-1.2-2.7 2.3 1.2 3.8 3.3 3.8 5.7A6 6 0 0 1 6 13.5C6 8 11 6.5 12 2z"/></svg></div><h3>1 · Earn them by playing</h3><p>Every game pays out <b title="Fragments of the Living Sigil. Spent in the Forge. Earned in the Trials.">Ember Shards of the First Spark</b> — for waves survived, for reaching the Sigil, and for rounds and duels won. Wins and daily challenges pay the most.</p></div>
+          <div class="shard-step reveal"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 21 12 12 22 3 12Z"/></svg></div><h3>2 · One wallet, every game</h3><p>Shards are <b>shared across all three games</b>. Earn them at the wall in the morning and they're waiting at the war-table at night — the balance in the top bar is that wallet.</p></div>
+          <div class="shard-step reveal"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M17 4H7v6a5 5 0 0 0 10 0V4z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-1.8 4-4 4M7 5H4a1 1 0 0 0-1 1c0 2.5 1.8 4 4 4"/></svg></div><h3>3 · Your progress, saved locally</h3><p>Wallet, stats, streaks, and achievements are <b>saved in this browser</b> — no account needed. Come back on the same device and your record is right where you left it. Shards are a score to chase, never something to buy.</p></div>
+        </div>
+      </section>
+
+      <!-- SIGNUP / DOWNLOADS -->
+      <section id="signup" aria-labelledby="signup-h">
+        <div class="signup reveal">
+          <div class="sec-tag">Offline Editions</div>
+          <h2 id="signup-h">Sign Up &amp; Download — Free</h2>
+          <p class="sub">Prefer to play offline? Drop your email below and the three download links unlock right here. Each zip holds the game as a single file you can open anywhere — a gift to readers and lorekeepers.</p>
+          <form class="gate" id="gate-form" novalidate>
+            <label for="email" class="sr-only">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" />
+            <button type="submit">Unlock downloads</button>
+          </form>
+          <p class="form-msg" id="form-msg" role="status" aria-live="polite"></p>
+          <p class="honest">Honest note: this is a demo signup. No email is sent or stored by this page — the field simply unlocks the downloads below. Real email capture for the saga's mailing list comes later.</p>
+          <div class="downloads" id="downloads" aria-hidden="true">
+            <h3>Your Downloads</h3>
+            <p class="dl-expiry">These download links are good until <b>November 21, 2026, at 5:01 PM ET</b> — grab the zips before then.</p>
+            <div class="dl-grid">
+              <div class="dl"><span class="dl-name">Forge Defense</span><span class="dl-file">bf-mini-game.zip — game + README</span><a href="https://muse.ai/files/884331458092752/1524312069523806/0yqv23thhn54jjn42zhz3gtd/bf-mini-game.zip" download>⬇ Download</a></div>
+              <div class="dl"><span class="dl-name">The Forge Road</span><span class="dl-file">bf-board-game.zip — game + README</span><a href="https://muse.ai/files/884331458092752/2319528531954953/1049w00qiuyrz29oczlz1icy/bf-board-game.zip" download>⬇ Download</a></div>
+              <div class="dl"><span class="dl-name">Card Battler</span><span class="dl-file">bf-card-game.zip — game + README</span><a href="https://muse.ai/files/884331458092752/1416200687000382/ki6e5fil6sac57vsc3iasmcg/bf-card-game.zip" download>⬇ Download</a></div>
+            </div>
+            <p class="dl-note">Each zip contains the game as a single HTML file plus a README. Unzip it, open the <strong>.html</strong> file in any browser, and play — no install, no internet needed. <b>Plainly:</b> the playable web versions linked on this page do not expire. Only these zip download links expire — <b>November 21, 2026, at 5:01 PM ET</b> — and a permanent download home for the zips is in progress.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section aria-labelledby="how-h">
+        <div class="sec-head center reveal"><div><h2 id="how-h">From Lobby to Playing in a Minute</h2></div></div>
+        <div class="steps">
+          <div class="step reveal"><div class="num"><span>1</span></div><h3>Pick a game</h3><p>Choose any of the three games above and hit Play — it opens right in your browser.</p></div>
+          <div class="step reveal"><div class="num"><span>2</span></div><h3>Earn shards</h3><p>Play, win, and finish daily challenges. Shards and stats save themselves as you go.</p></div>
+          <div class="step reveal"><div class="num"><span>3</span></div><h3>Watch your record grow</h3><p>Come back to this lobby to see your wallet, streaks, bests, and achievements shelf fill up.</p></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot-inner">
+        <div>
+          <p class="fname">BLOODLINE FORGE: THE AWAKENED SAGA™</p>
+          <p>Games set in the world of the Bloodline Forge novels by Raven Reigne — beginning with Book One, <em>The First Spark</em>.</p>
+          <p>Free games for readers and lorekeepers. Play them, share them, and may your bloodline awaken.</p>
+          <p><b style="color:var(--gold2)">How this was made:</b> built for Bloodline Forge: The Awakened Saga™ — three complete browser games and this lobby, made for the saga's readers. Free to play, no account, and your progress stays on your own device.</p>
+        </div>
+        <div class="foot-col"><h4>Games</h4><a href="https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M" target="_blank" rel="noopener">Forge Defense</a><a href="https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE" target="_blank" rel="noopener">The Forge Road</a><a href="https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y" target="_blank" rel="noopener">Card Battler</a></div>
+        <div class="foot-col"><h4>Lobby</h4><a href="#dashboard">Your Forge Record</a><a href="#daily-h">Daily Challenges</a><a href="#shop-h">Shard Shop</a><a href="#store-h">Forge Store &amp; Merch</a><a href="#shards-h">How Shards Work</a><a href="#signup">Downloads</a></div>
+      </div>
+      <div class="foot-bottom">Bloodline Forge: The Awakened Saga™ — Free Games Hub • Playable web versions do not expire • Zip downloads good until Nov 21, 2026, 5:01 PM ET — a permanent download home is in progress</div>
+    </footer>
+
+    <!-- FIRST-VISIT TOUR -->
+    <div class="tour-overlay" id="tour-overlay" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+      <div class="tour-card">
+        <p class="tour-step-tag" id="tour-tag">Welcome · Step 1 of 4</p>
+        <h3 id="tour-title">Welcome to the Forge Lobby</h3>
+        <p id="tour-text">Three complete games from Bloodline Forge: The Awakened Saga™ live here — Forge Defense, The Forge Road, and Card Battler. A ninety-second tour, then the Forge is yours.</p>
+        <div class="tour-actions">
+          <button type="button" class="btn btn-primary" id="tour-next" style="border:none;cursor:pointer;font-family:inherit">Begin →</button>
+          <button type="button" class="btn btn-ghost" id="tour-skip" style="cursor:pointer;font-family:inherit">Skip tour</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+        var PLAY_URLS = {
+          mini: 'https://muse.ai/s/bf-mini-game-vp6xmxrxdxpxnqtb/LwtkppmW9qyOKFSKFe89yc49RbHUasw2zusCseI4C5M',
+          board: 'https://muse.ai/s/bf-board-game-xmxi6xmxrxcxixzxcxku/dVICbnUSVGlXzUnkasxHR3xZEG6fVqD1a76l8mOaFNE',
+          card: 'https://muse.ai/s/bf-card-game-qb6xmxrxcxaxs5zxg/md8PMivhx70SID7ul87srS7nKxEdMcUYrICelz7QN4Y'
+        };
+        var GAMES = [
+          { id: 'mini', name: 'Forge Defense', statsKey: 'bf-mini-stats' },
+          { id: 'board', name: 'The Forge Road', statsKey: 'bf-board-stats' },
+          { id: 'card', name: 'Card Battler', statsKey: 'bf-card-stats' }
+        ];
+        var FEATURED = [
+          { id:'mini', name:'Forge Defense', desc:'Stand the wall — play a run of Forge Defense today and keep your streak alive. Featured game rotates daily so every door into the saga gets its day in the fire.', reward:'Daily: Play a run today' },
+          { id:'board', name:'The Forge Road', desc:'Walk the road — finish a race on the Forge Road today. Roll well, brave the event tiles, and beat the rival to the Living Sigil.', reward:'Daily: Finish a race today' },
+          { id:'card', name:'Card Battler', desc:'Take the table — win a duel in Card Battler today. Build the deck, bluff the round, and climb the rank ladder one win at a time.', reward:'Daily: Win a duel today' }
+        ];
+        function featuredIndex(){ var now=new Date(); var start=new Date(now.getFullYear(),0,0); var doy=Math.floor((now-start)/86400000); return doy % 3; }
+        function lsGet(key){ try{return window.localStorage.getItem(key);}catch(e){return null;} }
+        function parseJSON(raw){ if(raw==null) return null; try{return JSON.parse(raw);}catch(e){return null;} }
+        function pickNum(obj, keys){ if(!obj) return null; for(var i=0;i<keys.length;i++){ var v=obj[keys[i]]; if(typeof v==='number'&&isFinite(v)) return v; if(typeof v==='string'&&v.trim()!==''&&isFinite(Number(v))) return Number(v);} return null; }
+        function readShards(){ var raw=lsGet('bf-shards'); if(raw==null) return 0; var n=Number(raw); if(isFinite(n)) return Math.max(0,Math.floor(n)); var obj=parseJSON(raw); if(obj&&typeof obj==='object'){ var v=pickNum(obj,['balance','total','count','shards','amount','value']); return v==null?0:Math.max(0,Math.floor(v)); } return 0; }
+        function readStats(key){ var obj=parseJSON(lsGet(key)); return (obj&&typeof obj==='object'&&!Array.isArray(obj))?obj:null; }
+        function readAchievements(){ var obj=parseJSON(lsGet('bf-achievements')); if(Array.isArray(obj)) return obj; if(obj&&typeof obj==='object'){ if(Array.isArray(obj.list)) return obj.list; if(Array.isArray(obj.unlocked)) return obj.unlocked; var out=[]; for(var k in obj){ if(Object.prototype.hasOwnProperty.call(obj,k)&&obj[k]) out.push(typeof obj[k]==='object'?obj[k]:{id:k,name:k}); } return out; } return []; }
+        function playedOf(s){ return pickNum(s,['played','gamesPlayed','games','plays','matches','runs','gamesStarted','totalGames'])||0; }
+        function winsOf(s){ return pickNum(s,['wins','victories','won','gamesWon','matchesWon','duelsWon'])||0; }
+        function streakOf(s){ var v=pickNum(s,['currentStreak','streak','winStreak','currentWinStreak']); return v==null?0:v; }
+        function toDate(v){ if(v==null) return null; if(typeof v==='number'&&isFinite(v)){ var ms=v<1e11?v*1000:v; var d=new Date(ms); return isNaN(d.getTime())?null:d; } if(typeof v==='string'&&v.trim()!==''){ var d2=new Date(v); return isNaN(d2.getTime())?null:d2; } return null; }
+        function sameDay(a,b){ return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+        function lastPlayedDate(s){ if(!s) return null; var keys=['lastPlayed','lastPlayedAt','lastPlayedDate','lastPlay','lastGameAt','lastDate','updatedAt']; for(var i=0;i<keys.length;i++){ var d=toDate(s[keys[i]]); if(d) return d; } if(s.daily&&typeof s.daily==='object'){ var dd=toDate(s.daily.date||s.daily.day); if(dd) return dd; } return null; }
+        function playedToday(s){ if(!s) return false; var today=new Date(); if(sameDay(lastPlayedDate(s),today)) return true; if(s.daily&&typeof s.daily==='object'){ var dd=toDate(s.daily.date||s.daily.day); var dp=pickNum(s.daily,['played','games','count']); if(sameDay(dd,today)&&dp!=null&&dp>0) return true; } return false; }
+        function wonToday(s){ if(!s) return false; var today=new Date(); var keys=['lastWin','lastWinAt','lastWinDate','lastWonAt']; for(var i=0;i<keys.length;i++){ if(sameDay(toDate(s[keys[i]]),today)) return true; } if(s.daily&&typeof s.daily==='object'){ var dd=toDate(s.daily.date||s.daily.day); var dw=pickNum(s.daily,['wins','won']); if(sameDay(dd,today)&&dw!=null&&dw>0) return true; } return null; }
+        var BEST_FIELDS={mini:[{keys:['bestWave','highestWave','maxWave'],label:'Best wave reached'},{keys:['bestScore','highScore','topScore'],label:'Best score'},{keys:['bestTime','longestSurvival','bestSurvival'],label:'Longest survival (sec)'},{keys:['mostKills','bestKills'],label:'Most creatures felled'}],board:[{keys:['fewestTurns','bestTurns','minTurns','bestRolls','fewestRolls'],label:'Fewest turns to the Sigil'},{keys:['bestScore','highScore','topScore'],label:'Best score'},{keys:['bestTime','fastestWin','bestWinTime'],label:'Fastest win (sec)'}],card:[{keys:['bestScore','highScore','topScore'],label:'Best score'},{keys:['bestMargin','bestDiff','biggestWin','bestRoundMargin'],label:'Biggest winning margin'},{keys:['roundsWon','bestRoundsWon'],label:'Rounds won'},{keys:['bestStreak','longestStreak'],label:'Best win streak'}]};
+        var SKIP_KEYS={played:1,gamesPlayed:1,games:1,plays:1,matches:1,runs:1,gamesStarted:1,totalGames:1,wins:1,victories:1,won:1,gamesWon:1,matchesWon:1,duelsWon:1,losses:1,lost:1,gamesLost:1,defeats:1,streak:1,currentStreak:1,winStreak:1,currentWinStreak:1,lastPlayed:1,lastPlayedAt:1,lastPlayedDate:1,lastPlay:1,lastGameAt:1,lastDate:1,updatedAt:1,lastWin:1,lastWinAt:1,lastWinDate:1,lastWonAt:1,daily:1,playedToday:1,todayPlayed:1,gamesToday:1,shards:1,shardsEarned:1};
+        function humanize(key){ var s=key.replace(/([a-z0-9])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ').toLowerCase(); return s.charAt(0).toUpperCase()+s.slice(1); }
+        function fmt(n){ return Number(n).toLocaleString('en-US'); }
+        function bestRows(gameId,s){ var rows=[]; if(!s) return rows; var played=playedOf(s),wins=winsOf(s); if(played>0) rows.push({label:'Games played',value:fmt(played)}); if(wins>0) rows.push({label:'Wins',value:fmt(wins)}); var used={}; var defs=BEST_FIELDS[gameId]||[]; for(var i=0;i<defs.length;i++){ var v=pickNum(s,defs[i].keys); if(v!=null&&v>0){ rows.push({label:defs[i].label,value:fmt(v)}); for(var j=0;j<defs[i].keys.length;j++) used[defs[i].keys[j]]=1; } } for(var k in s){ if(rows.length>=6) break; if(!Object.prototype.hasOwnProperty.call(s,k)) continue; if(SKIP_KEYS[k]||used[k]) continue; var val=s[k]; if(typeof val==='number'&&isFinite(val)&&val>0) rows.push({label:humanize(k),value:fmt(val)}); } return rows; }
+        var DAILY_POOL={
+          bloodvine:{game:'mini',gameName:'Forge Defense',title:'Silence the Bloodvine',text:'Face Seris\u2019s serpent across three conditions.',conditions:[
+            {label:'Play a run of Forge Defense today',test:function(s){return playedToday(s);}},
+            {label:'Silence the Bloodvine — fell 10+ creatures in a best run, or reach Trial IV',test:function(s){var k=pickNum(s,['mostKills','bestKills']); var w=pickNum(s,['bestWave','highestWave','maxWave']); return (k!=null&&k>=10)||(w!=null&&w>=4);}},
+            {label:'Survive to Trial V — best wave 5 or higher',test:function(s){var w=pickNum(s,['bestWave','highestWave','maxWave']); return w!=null&&w>=5;}}
+          ]},
+          glass:{game:'mini',gameName:'Forge Defense',title:'The Glass Must Not Break',text:'Hold the wall across three conditions — let nothing through the glass.',conditions:[
+            {label:'Play a run of Forge Defense today',test:function(s){return playedToday(s);}},
+            {label:'Hold the line — best wave 3 or higher',test:function(s){var w=pickNum(s,['bestWave','highestWave','maxWave']); return w!=null&&w>=3;}},
+            {label:'A perfect stand — win a run of Forge Defense',test:function(s){return winsOf(s)>0;}}
+          ]},
+          spark:{game:'board',gameName:'The Forge Road',title:'Carry the Spark',text:'Carry the spark down the Road across three conditions.',conditions:[
+            {label:'Finish a race on the Forge Road today',test:function(s){return playedToday(s);}},
+            {label:'Win a race today',test:function(s){var w=wonToday(s); return w===null?playedToday(s):w;}},
+            {label:'Exact landing — your best win reached the Sigil in 30 turns or fewer',test:function(s){var t=pickNum(s,['fewestTurns','bestTurns','minTurns','bestRolls','fewestRolls']); return (t!=null&&t>0&&t<=30)||winsOf(s)>0;}}
+          ]},
+          trial:{game:'card',gameName:'Card Battler',title:'Survive the Twelfth Trial',text:'Win three duels\u2019 worth of proof at the war-table.',conditions:[
+            {label:'Win a duel in Card Battler today',test:function(s){var w=wonToday(s); return w===null?playedToday(s):w;}},
+            {label:'Win a duel by a wide margin — best winning margin of 5 or more',test:function(s){var m=pickNum(s,['bestMargin','bestDiff','biggestWin','bestRoundMargin']); var r=pickNum(s,['roundsWon','bestRoundsWon']); return (m!=null&&m>=5)||(r!=null&&r>=2);}},
+            {label:'One with a faction\u2019s strength — 3 or more duels won all-time',test:function(s){return winsOf(s)>=3;}}
+          ]}
+        };
+        function todaysDaily(){ var now=new Date(); var start=new Date(now.getFullYear(),0,0); var doy=Math.floor((now-start)/86400000); var defense=(doy%2===0)?DAILY_POOL.bloodvine:DAILY_POOL.glass; return [defense,DAILY_POOL.spark,DAILY_POOL.trial]; }
+        var DAILY=todaysDaily();
+        var RANKS=[{min:0,name:'Ember Spark',next:250},{min:250,name:'Bronze of the Forge',next:750},{min:750,name:'Silver of the Sigil',next:1500},{min:1500,name:'Gold of the Crown',next:3000},{min:3000,name:'Ember Lord',next:null}];
+        var LORE_ACH=[{name:'First Spark Bearer',desc:'Begin the climb — carry the spark and earn your first shards.',min:0},{name:'Trial-Walker',desc:'Walk the Trials — reach 100 on the Forge Record.',min:100},{name:'Sigil-Touched',desc:'Touch the Living Sigil — reach 500 on the Forge Record.',min:500},{name:"Crown's Shadow",desc:'Stand where the Crown\u2019s shadow falls — reach 1,000 on the Forge Record.',min:1000},{name:'Bloodline Tested',desc:'Have your bloodline measured — reach 1,750 on the Forge Record.',min:1750},{name:'One Who Made the Glass Hum',desc:'Reach 2,500 on the Forge Record — and make the glass hum.',min:2500}];
+        function rankFor(shards,wins,ach){ var score=shards + wins*25 + (ach||0)*50; var cur=RANKS[0]; for(var i=0;i<RANKS.length;i++){ if(score>=RANKS[i].min) cur=RANKS[i]; } return {rank:cur,score:score}; }
+        function streakMult(streak){ return streak>=7?2:(streak>=3?1.5:1); }
+        function todayKey(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+        var state={shards:0,played:0,wins:0,streak:0,dailyDone:0,achievements:0,perGame:{}};
+        function render(){
+          var shards=readShards(); var stats={}; var totalPlayed=0,totalWins=0,streak=0; var i,g,s;
+          for(i=0;i<GAMES.length;i++){ g=GAMES[i]; s=readStats(g.statsKey); stats[g.id]=s; if(s){ totalPlayed+=playedOf(s); totalWins+=winsOf(s); streak=Math.max(streak,streakOf(s)); } }
+          var achievements=readAchievements();
+          document.getElementById('hud-shards').textContent=fmt(shards);
+          document.getElementById('hud-streak').textContent=fmt(streak);
+          document.getElementById('stat-shards').textContent=fmt(shards);
+          document.getElementById('stat-played').textContent=fmt(totalPlayed);
+          document.getElementById('stat-wins').textContent=fmt(totalWins);
+          document.getElementById('stat-streak').textContent=fmt(streak);
+          document.getElementById('stat-winrate').textContent=totalPlayed>0?Math.round((totalWins/totalPlayed)*100)+'%':'—';
+          // Profile rank
+          var rr=rankFor(shards,totalWins,achievements.length);
+          var rankEl=document.getElementById('profile-rank'); if(rankEl) rankEl.textContent=rr.rank.name;
+          var nextEl=document.getElementById('rank-next'); var fillEl=document.getElementById('rank-fill');
+          if(rr.rank.next){ var pct=Math.max(4,Math.min(100,Math.round((rr.score/rr.rank.next)*100))); if(fillEl) fillEl.style.width=pct+'%'; if(nextEl) nextEl.textContent=fmt(rr.score)+' / '+fmt(rr.rank.next)+' toward next rank'; } else { if(fillEl) fillEl.style.width='100%'; if(nextEl) nextEl.textContent='Top rank reached — '+rr.rank.name; }
+          var rungs=document.querySelectorAll('#rank-ladder [data-rank]'); for(var ri=0;ri<rungs.length;ri++){ rungs[ri].classList.toggle('current', rungs[ri].getAttribute('data-rank')===rr.rank.name); }
+          var hasData=shards>0||totalPlayed>0||totalWins>0||achievements.length>0;
+          document.getElementById('empty-state').classList.toggle('show',!hasData);
+          for(i=0;i<GAMES.length;i++){ g=GAMES[i]; s=stats[g.id]; var rows=bestRows(g.id,s); var holder=document.getElementById('best-'+g.id); if(rows.length){ var html='<ul>'; for(var r=0;r<rows.length;r++) html+='<li><span>'+rows[r].label+'</span><b>'+rows[r].value+'</b></li>'; html+='</ul>'; holder.innerHTML=html; } else { holder.innerHTML='<p class="none">Nothing recorded yet — your first game writes its line here.</p>'; } var cardBest=document.getElementById('card-best-'+g.id); if(cardBest){ if(s&&(playedOf(s)>0||winsOf(s)>0)){ var bits=[]; if(playedOf(s)>0) bits.push('<b>'+fmt(playedOf(s))+'</b> played'); if(winsOf(s)>0) bits.push('<b>'+fmt(winsOf(s))+'</b> won'); var extra=rows.slice(2,3); if(extra.length) bits.push(extra[0].label.toLowerCase()+' <b>'+extra[0].value+'</b>'); cardBest.innerHTML='Your record here: '+bits.join(' · '); cardBest.classList.add('show'); } else cardBest.classList.remove('show'); } }
+          var list=document.getElementById('check-list'); list.innerHTML=''; var doneCount=0; var dailyDoneMap={};
+          for(i=0;i<DAILY.length;i++){ var d=DAILY[i]; var condResults=[]; var condDone=0; for(var ci=0;ci<d.conditions.length;ci++){ var cok=false; try{cok=!!d.conditions[ci].test(stats[d.game]);}catch(e){cok=false;} condResults.push(cok); if(cok) condDone++; } var done=condDone===d.conditions.length; dailyDoneMap[d.game]=done; if(done) doneCount++; var condHtml='<ul class="cond-list">'; for(var cj=0;cj<d.conditions.length;cj++){ condHtml+='<li class="'+(condResults[cj]?'done':'')+'"><span class="cbox" aria-hidden="true">✓</span><span>'+d.conditions[cj].label+'</span></li>'; } condHtml+='</ul>'; var li=document.createElement('li'); li.className='check-item'+(done?' done':''); li.innerHTML='<span class="box" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ci-body"><span class="ci-game">'+d.gameName+'</span><p class="ci-text"><b style="color:var(--gold2)">'+d.title+'</b> — '+d.text+'</p>'+condHtml+'<p class="ci-state">'+(done?'Done — all 3 conditions complete for today.':condDone+' of 3 conditions done — jump in and finish it today.')+'</p></span>'+(done?'':'<a class="ci-play" href="'+PLAY_URLS[d.game]+'" target="_blank" rel="noopener">Play</a>'); list.appendChild(li); }
+          var mult=streakMult(streak); var hm=document.getElementById('hud-mult'); if(hm) hm.textContent='×'+mult; var dm=document.getElementById('daily-mult'); if(dm) dm.textContent='×'+mult;
+          var claimBtn=document.getElementById('claim-btn'); var claimedToday=lsGet('bf-daily-claim')===todayKey(); var reward=Math.round(50*mult);
+          if(claimBtn){ if(claimedToday){ claimBtn.disabled=true; claimBtn.textContent='✓ Daily reward claimed — come back tomorrow'; } else if(doneCount>=3){ claimBtn.disabled=false; claimBtn.textContent='Claim daily reward — +'+reward+' Ember Shards (50 × '+mult+')'; } else { claimBtn.disabled=true; claimBtn.textContent='Complete all 3 challenges to claim +'+reward+' shards (50 × '+mult+')'; } claimBtn.onclick=function(){ if(doneCount<3||lsGet('bf-daily-claim')===todayKey()) return; var nb=readShards()+Math.round(50*streakMult(streak)); try{ window.localStorage.setItem('bf-shards',String(nb)); window.localStorage.setItem('bf-daily-claim',todayKey()); }catch(e){} render(); }; }
+          document.getElementById('daily-count').textContent=doneCount+' of 3 done today.';
+          document.getElementById('prog-text').textContent=doneCount+' / 3';
+          document.getElementById('prog-fill').style.width=Math.round((doneCount/3)*100)+'%';
+          document.getElementById('prog-bar').setAttribute('aria-valuenow',String(doneCount));
+          // Featured rotation
+          var fi=featuredIndex(); var feat=FEATURED[fi];
+          var sg=document.getElementById('spot-game-name'); if(sg) sg.textContent=feat.name;
+          var sd=document.getElementById('spot-desc'); if(sd) sd.textContent=feat.desc;
+          var sr=document.getElementById('spot-reward'); var fd=null; for(var q=0;q<DAILY.length;q++){ if(DAILY[q].game===feat.id) fd=DAILY[q]; } if(sr) sr.textContent=fd?('Daily: '+fd.title):feat.reward;
+          var ss=document.getElementById('spot-status'); if(ss) ss.textContent=dailyDoneMap[feat.id]?'Status: ✓ Done today — nice work':'Status: Not yet done today';
+          var sp=document.getElementById('spot-play'); if(sp){ sp.href=PLAY_URLS[feat.id]; sp.textContent='Play '+feat.name+' →'; }
+          var cards=document.querySelectorAll('.card[data-game]'); for(var c=0;c<cards.length;c++){ cards[c].classList.toggle('featured-card', cards[c].getAttribute('data-game')===feat.id); }
+          // Achievements
+          var shelf=document.getElementById('shelf'); var shelfEmpty=document.getElementById('shelf-empty'); shelf.innerHTML=''; var shown=0;
+          for(var la=0;la<LORE_ACH.length;la++){ var lt=LORE_ACH[la]; var ltUnlocked=rr.score>=lt.min&&(lt.min>0||hasData); shown++; var ldiv=document.createElement('div'); ldiv.className='ach'; if(!ltUnlocked) ldiv.style.opacity='0.45'; ldiv.innerHTML='<div class="medal"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.2L21 9.3l-4.9 4.3 1.5 6.4L12 16.7 6.4 20l1.5-6.4L3 9.3l6.4-1.1z"/></svg></span></div><div class="ach-name"></div><div class="ach-desc"></div>'+(ltUnlocked?'':'<div class="ach-desc">Locked</div>'); ldiv.querySelector('.ach-name').textContent=lt.name; ldiv.querySelector('.ach-desc').textContent=lt.desc; shelf.appendChild(ldiv); }
+          for(i=0;i<achievements.length;i++){ var a=achievements[i]; var name='',desc='',locked=false; if(typeof a==='string') name=a; else if(a&&typeof a==='object'){ name=a.name||a.title||a.label||a.id||''; desc=a.desc||a.description||a.text||''; if(a.unlocked===false||a.earned===false||a.done===false) locked=true; } if(!name) continue; var dup=false; for(var lx=0;lx<LORE_ACH.length;lx++){ if(LORE_ACH[lx].name===name) dup=true; } if(dup) continue; shown++; var div=document.createElement('div'); div.className='ach'; if(locked) div.style.opacity='0.45'; div.innerHTML='<div class="medal"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.2L21 9.3l-4.9 4.3 1.5 6.4L12 16.7 6.4 20l1.5-6.4L3 9.3l6.4-1.1z"/></svg></span></div><div class="ach-name"></div>'+(desc?'<div class="ach-desc"></div>':'')+(locked?'<div class="ach-desc">Locked</div>':''); div.querySelector('.ach-name').textContent=name; if(desc) div.querySelector('.ach-desc').textContent=desc; shelf.appendChild(div); }
+          shelfEmpty.style.display=shown?'none':'block';
+          state={shards:shards,played:totalPlayed,wins:totalWins,streak:streak,dailyDone:doneCount,achievements:shown,perGame:stats};
+        }
+        render(); window.addEventListener('focus',render); document.addEventListener('visibilitychange',function(){if(!document.hidden) render();});
+        var copyBtn=document.getElementById('copy-stats'); var copyLabel=document.getElementById('copy-stats-label');
+        function statsText(){ var lines=[]; lines.push('My record — Bloodline Forge: The Awakened Saga™ (Free Games hub)'); lines.push('Ember Shards of the First Spark: '+fmt(state.shards)); lines.push('Games played: '+fmt(state.played)+' · Wins: '+fmt(state.wins)+(state.played>0?' · Win rate: '+Math.round((state.wins/state.played)*100)+'%':'')); lines.push('Current streak: '+fmt(state.streak)); lines.push('Daily challenges today: '+state.dailyDone+' / 3'); lines.push('Achievements unlocked: '+state.achievements); for(var i=0;i<GAMES.length;i++){ var g=GAMES[i],s=state.perGame[g.id]; if(s&&(playedOf(s)>0||winsOf(s)>0)) lines.push(g.name+': '+fmt(playedOf(s))+' played, '+fmt(winsOf(s))+' won'); } return lines.join('\n'); }
+        function copyFallback(text){ var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); var ok=false; try{ok=document.execCommand('copy');}catch(e){ok=false;} document.body.removeChild(ta); return ok; }
+        function copyDone(ok){ copyLabel.textContent=ok?'Copied!':'Copy failed — sorry'; copyBtn.classList.toggle('copied',ok); setTimeout(function(){ copyLabel.textContent='Copy my stats'; copyBtn.classList.remove('copied'); },2200); }
+        copyBtn.addEventListener('click',function(){ var text=statsText(); if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(function(){copyDone(true);},function(){copyDone(copyFallback(text));}); } else copyDone(copyFallback(text)); });
+        var form=document.getElementById('gate-form'); var input=document.getElementById('email'); var msg=document.getElementById('form-msg'); var downloads=document.getElementById('downloads'); var unlocked=false;
+        function looksValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+        form.addEventListener('submit',function(e){ e.preventDefault(); var v=(input.value||'').trim(); if(!looksValidEmail(v)){ msg.textContent='That email doesn\u2019t look quite right — check it and try again.'; msg.className='form-msg err'; input.setAttribute('aria-invalid','true'); input.focus(); return; } input.removeAttribute('aria-invalid'); msg.textContent='The Forge opens to you — your three downloads are unlocked below.'; msg.className='form-msg ok'; if(!unlocked){ unlocked=true; downloads.classList.add('show'); downloads.setAttribute('aria-hidden','false'); } setTimeout(function(){ downloads.scrollIntoView({behavior:'smooth',block:'nearest'}); },60); });
+        input.addEventListener('input',function(){ if(msg.className.indexOf('err')!==-1){ msg.textContent=''; msg.className='form-msg'; input.removeAttribute('aria-invalid'); } });
+        // Scroll reveals — fail-safe: never hides content, adds animation class when seen + timed fallback
+        var reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(!reduceMotion && 'IntersectionObserver' in window){ var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('visible'); io.unobserve(en.target); } }); },{threshold:0.08}); document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); }); setTimeout(function(){ document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); }); },1600); } else { document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); }); }
+        // Embers canvas
+        var canvas=document.getElementById('embers');
+        if(canvas&&canvas.getContext&&!reduceMotion){ var ctx=canvas.getContext('2d'); var W=0,H=0,parts=[],raf=null; function resize(){ var r=canvas.parentElement.getBoundingClientRect(); W=canvas.width=Math.floor(r.width); H=canvas.height=Math.floor(r.height); } function spawn(init){ return {x:Math.random()*W,y:init?Math.random()*H:H+6,r:0.8+Math.random()*2.2,vy:0.25+Math.random()*0.8,vx:(Math.random()-0.5)*0.3,sway:Math.random()*Math.PI*2,a:0.25+Math.random()*0.55,hue:22+Math.random()*22}; } function tick(){ ctx.clearRect(0,0,W,H); for(var i=0;i<parts.length;i++){ var p=parts[i]; p.sway+=0.012; p.x+=p.vx+Math.sin(p.sway)*0.25; p.y-=p.vy; if(p.y<-8||p.x<-8||p.x>W+8) parts[i]=p=spawn(false); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='hsla('+p.hue+', 88%, 58%, '+p.a+')'; ctx.fill(); } raf=requestAnimationFrame(tick); } function start(){ resize(); var count=Math.min(72,Math.max(24,Math.floor(W/16))); parts=[]; for(var i=0;i<count;i++) parts.push(spawn(true)); if(!raf) tick(); } start(); var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(start,180); }); document.addEventListener('visibilitychange',function(){ if(document.hidden){ cancelAnimationFrame(raf); raf=null; } else if(!raf) tick(); }); }
+        // Rotating hero lore lines
+        var LORE_LINES=['Lyra Vale carries the first spark into a world of ember and shadow.','Twelve trials. One Living Sigil. Every bloodline will be measured.','The Crown does not ask. It takes.'];
+        var loreEl=document.getElementById('lore-line');
+        var rmLore=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(loreEl&&!rmLore){ var loreIdx=0; setInterval(function(){ loreEl.classList.add('fade'); setTimeout(function(){ loreIdx=(loreIdx+1)%LORE_LINES.length; loreEl.textContent=LORE_LINES[loreIdx]; loreEl.classList.remove('fade'); },460); },6000); }
+      })();
+    </script>
+    <script>
+      (function () {
+        'use strict';
+        function lsGet(k){ try{return window.localStorage.getItem(k);}catch(e){return null;} }
+        function lsSet(k,v){ try{window.localStorage.setItem(k,v);}catch(e){} }
+        function parseJ(raw){ if(raw==null) return null; try{return JSON.parse(raw);}catch(e){return null;} }
+        function fmt(n){ return Number(n).toLocaleString('en-US'); }
+        function readShards(){ var raw=lsGet('bf-shards'); if(raw==null) return 0; var n=Number(raw); if(isFinite(n)) return Math.max(0,Math.floor(n)); var o=parseJ(raw); if(o&&typeof o==='object'){ var keys=['balance','total','count','shards','amount','value']; for(var i=0;i<keys.length;i++){ if(typeof o[keys[i]]==='number') return Math.max(0,Math.floor(o[keys[i]])); } } return 0; }
+        function writeShards(n){ lsSet('bf-shards',String(Math.max(0,Math.floor(n)))); }
+        function readStats(k){ var o=parseJ(lsGet(k)); return (o&&typeof o==='object'&&!Array.isArray(o))?o:null; }
+        function pickNum(o,keys){ if(!o) return null; for(var i=0;i<keys.length;i++){ var v=o[keys[i]]; if(typeof v==='number'&&isFinite(v)) return v; } return null; }
+        function todayKey(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+        function weekKey(){ var d=new Date(); var onejan=new Date(d.getFullYear(),0,1); var wk=Math.ceil((((d-onejan)/86400000)+onejan.getDay()+1)/7); return d.getFullYear()+'-W'+wk; }
+
+        /* ---- Cosmetics store (bf-cosmetics) ---- */
+        function readCos(){ var o=parseJ(lsGet('bf-cosmetics')); if(!o||typeof o!=='object') o={}; if(!Array.isArray(o.owned)) o.owned=[]; if(typeof o.fragments!=='number') o.fragments=0; if(!o.powers||typeof o.powers!=='object') o.powers={}; return o; }
+        function writeCos(o){ lsSet('bf-cosmetics',JSON.stringify(o)); }
+
+        var SHOP=[
+          {id:'title-sigil',kind:'Exclusive Title',name:'Sigil-Touched',price:150,desc:'Bear the title of one the Living Sigil has marked. Shows as your equipped title on this hub.'},
+          {id:'title-crown',kind:'Exclusive Title',name:"Crown's Shadow",price:300,desc:'Stand where the Crown\u2019s shadow falls. The rarer title — few earn the shards to wear it.'},
+          {id:'cardback-ashen',kind:'Card Back',name:'Ashen War-Table Card Back',price:200,desc:'A scorched-ember card back for the war-table, saved to the shared forge settings the games read.'},
+          {id:'token-ember',kind:'Road Token',name:'Ember Road Token',price:120,desc:'A goldfire token for your champion on the Forge Road, saved to the shared forge settings.'},
+          {id:'glow-goldfire',kind:'Forge Glow',name:'Goldfire Forge Glow',price:250,desc:'A warm goldfire glow for the Forge — the Bronze rank reward in the Shop, and a signature look.'},
+          {id:'power-start',kind:'One-Use Power',name:'+1 Starting Shard',price:40,desc:'Begin your next game session one shard richer. Stacks in your pouch until used.'},
+          {id:'power-shield',kind:'One-Use Power',name:'Shield Token',price:60,desc:'One shield, held in reserve for the run or race that needs it. Stacks in your pouch.'},
+          {id:'fragment',kind:'Prestige',name:'Sigil Fragment',price:500,desc:'Forge 500 shards into 1 Sigil Fragment — the prestige currency. Fragments never reset, season after season.'}
+        ];
+        var shopMsg=document.getElementById('shop-msg');
+        function renderShop(){
+          var cos=readCos(); var shards=readShards();
+          var w=document.getElementById('shop-wallet'); if(w) w.textContent=fmt(shards);
+          var f=document.getElementById('shop-fragments'); if(f) f.textContent=fmt(cos.fragments);
+          var sf=document.getElementById('season-fragments'); if(sf) sf.textContent=fmt(cos.fragments);
+          var sc=document.getElementById('season-cosmetics'); if(sc) sc.textContent=fmt(cos.owned.length);
+          var grid=document.getElementById('shop-grid'); if(!grid) return; grid.innerHTML='';
+          SHOP.forEach(function(item){
+            var owned=item.id!=='fragment'&&item.kind.indexOf('One-Use')!==0&&cos.owned.indexOf(item.id)>-1;
+            var count=0; if(item.id==='power-start') count=cos.powers.startShard||0; if(item.id==='power-shield') count=cos.powers.shield||0;
+            var div=document.createElement('div'); div.className='shop-item';
+            var label=item.id==='fragment'?'Forge — 500 shards':(owned?'Owned':fmt(item.price)+' shards');
+            if(count>0) label=fmt(item.price)+' shards · '+count+' in pouch';
+            div.innerHTML='<span class="shop-kind"></span><h4></h4><p></p>';
+            div.querySelector('.shop-kind').textContent=item.kind;
+            div.querySelector('h4').textContent=item.name;
+            div.querySelector('p').textContent=item.desc;
+            var btn=document.createElement('button'); btn.type='button'; btn.className='buy-btn'+(owned?' owned':''); btn.textContent=owned?'✓ Owned':label; btn.disabled=owned||shards<item.price;
+            if(!owned&&shards<item.price) btn.textContent=label+' — need '+fmt(item.price-shards)+' more';
+            btn.addEventListener('click',function(){
+              var c2=readCos(); var bal=readShards(); if(bal<item.price) return;
+              writeShards(bal-item.price);
+              if(item.id==='fragment'){ c2.fragments+=1; }
+              else if(item.id==='power-start'){ c2.powers.startShard=(c2.powers.startShard||0)+1; }
+              else if(item.id==='power-shield'){ c2.powers.shield=(c2.powers.shield||0)+1; }
+              else if(c2.owned.indexOf(item.id)===-1){ c2.owned.push(item.id); }
+              if(item.id==='title-sigil'||item.id==='title-crown'){ c2.equippedTitle=item.name; }
+              writeCos(c2);
+              if(shopMsg){ shopMsg.textContent=item.id==='fragment'?'Forged! +1 Sigil Fragment — prestige that never resets.':('Yours: '+item.name+'. Saved on this device.'); shopMsg.className='form-msg ok'; }
+              renderShop(); renderRank(); trackCaps();
+              var hs=document.getElementById('hud-shards'); if(hs) hs.textContent=fmt(readShards());
+              var ss=document.getElementById('stat-shards'); if(ss) ss.textContent=fmt(readShards());
+            });
+            div.appendChild(btn); grid.appendChild(div);
+          });
+        }
+
+        /* ---- Daily cap + weekly goal tracking (balance-delta, this device) ---- */
+        function trackCaps(){
+          var shards=readShards(); var tk=todayKey(); var wk=weekKey();
+          var day=parseJ(lsGet('bf-shard-day')); if(!day||day.date!==tk||typeof day.start!=='number'){ day={date:tk,start:shards}; lsSet('bf-shard-day',JSON.stringify(day)); }
+          var earnedToday=Math.max(0,shards-day.start);
+          var cf=document.getElementById('cap-fill'); if(cf) cf.style.width=Math.min(100,Math.round(earnedToday/300*100))+'%';
+          var cv=document.getElementById('cap-val'); if(cv) cv.textContent=fmt(earnedToday)+' / 300'+(earnedToday>=300?' — past the cap, games pay half':'');
+          var week=parseJ(lsGet('bf-shard-week')); if(!week||week.week!==wk||typeof week.start!=='number'){ week={week:wk,start:shards}; lsSet('bf-shard-week',JSON.stringify(week)); }
+          var earnedWeek=Math.max(0,shards-week.start);
+          var wf=document.getElementById('week-fill'); if(wf) wf.style.width=Math.min(100,Math.round(earnedWeek/500*100))+'%';
+          var wv=document.getElementById('week-val'); if(wv) wv.textContent=fmt(earnedWeek)+' / 500';
+          var wn=document.getElementById('week-note');
+          if(earnedWeek>=500){ var cos=readCos(); var gid='weekly-glow-'+wk; if(cos.owned.indexOf(gid)===-1){ cos.owned.push(gid); writeCos(cos); renderShop(); } if(wn) wn.innerHTML='<b>Goal reached!</b> The Weekly Ember Glow cosmetic is yours — saved in your collection on this device.'; }
+        }
+
+        /* ---- Forge Rank section ---- */
+        var RANK_LADDER=[{min:0,name:'Ember Spark',reward:'Next: Bronze of the Forge at 250 — reward: the Bronze Forge Glow unlocks in the Shard Shop.'},{min:250,name:'Bronze of the Forge',reward:'Next: Silver of the Sigil at 750 — reward: the Silver Sigil title enters the Shop.'},{min:750,name:'Silver of the Sigil',reward:'Next: Gold of the Crown at 1,500 — reward: the Gold Crown card back enters the Shop.'},{min:1500,name:'Gold of the Crown',reward:'Next: Ember Lord at 3,000 — the final rank of Season I.'},{min:3000,name:'Ember Lord',reward:'Top rank of Season I — Ember Lord. The Forge bows.'}];
+        function renderRank(){
+          var keys={mini:'bf-mini-stats',board:'bf-board-stats',card:'bf-card-stats'};
+          var playedGames=0,totalWins=0;
+          ['mini','board','card'].forEach(function(g){ var s=readStats(keys[g]); if(s){ var p=pickNum(s,['played','gamesPlayed','games','plays','matches','runs','gamesStarted','totalGames'])||0; var wn=pickNum(s,['wins','victories','won','gamesWon','matchesWon','duelsWon'])||0; if(p>0) playedGames++; totalWins+=wn; } });
+          var ach=parseJ(lsGet('bf-achievements')); var achCount=Array.isArray(ach)?ach.length:(ach&&typeof ach==='object'?(ach.list||ach.unlocked||[]).length:0);
+          var shards=readShards(); var score=shards+totalWins*25+achCount*50;
+          var cur=RANK_LADDER[0]; RANK_LADDER.forEach(function(r){ if(score>=r.min) cur=r; });
+          var rc=document.getElementById('rank-current'); if(rc) rc.textContent=cur.name;
+          var rn=document.getElementById('rank-next-note'); if(rn) rn.textContent=cur.reward+' Current score: '+fmt(score)+'.';
+          var collPct=Math.round(((playedGames/3)*0.6+(Math.min(achCount,6)/6)*0.4)*100);
+          function bar(fillId,valId,val,max,suffix){ var f=document.getElementById(fillId); if(f) f.style.width=Math.min(100,Math.round(val/max*100))+'%'; var v=document.getElementById(valId); if(v) v.textContent=fmt(val)+(suffix||''); }
+          bar('rb-shards-fill','rb-shards-val',shards,3000);
+          bar('rb-wins-fill','rb-wins-val',totalWins,60);
+          var cf2=document.getElementById('rb-coll-fill'); if(cf2) cf2.style.width=collPct+'%';
+          var cv2=document.getElementById('rb-coll-val'); if(cv2) cv2.textContent=collPct+'% ('+playedGames+' of 3 games entered, '+Math.min(achCount,6)+' of 6 saga titles)';
+        }
+
+        /* ---- Forge Record Wall (bf-record-wall) ---- */
+        function renderWall(){
+          var wall=parseJ(lsGet('bf-record-wall')); if(!Array.isArray(wall)) wall=[];
+          var list=document.getElementById('wall-list'); var empty=document.getElementById('wall-empty'); if(!list) return;
+          list.innerHTML=''; empty.style.display=wall.length?'none':'block';
+          wall.slice().reverse().forEach(function(e){
+            var li=document.createElement('li');
+            var left=document.createElement('span'); var b=document.createElement('b'); b.textContent=e.name||'Unnamed'; left.appendChild(b); left.appendChild(document.createTextNode(' — '+e.date));
+            var right=document.createElement('span'); right.textContent=fmt(e.shards||0)+' shards · '+fmt(e.played||0)+' played · '+fmt(e.wins||0)+' wins · streak '+fmt(e.streak||0);
+            li.appendChild(left); li.appendChild(right); list.appendChild(li);
+          });
+        }
+        var wallForm=document.getElementById('wall-form');
+        if(wallForm){ wallForm.addEventListener('submit',function(ev){ ev.preventDefault();
+          var name=(document.getElementById('wall-name').value||'').trim()||'Unnamed Lorekeeper';
+          var keys={mini:'bf-mini-stats',board:'bf-board-stats',card:'bf-card-stats'}; var played=0,wins=0,streak=0;
+          ['mini','board','card'].forEach(function(g){ var s=readStats(keys[g]); if(s){ played+=pickNum(s,['played','gamesPlayed','games','plays','matches','runs','gamesStarted','totalGames'])||0; wins+=pickNum(s,['wins','victories','won','gamesWon','matchesWon','duelsWon'])||0; streak=Math.max(streak,pickNum(s,['currentStreak','streak','winStreak','currentWinStreak'])||0); } });
+          var wall=parseJ(lsGet('bf-record-wall')); if(!Array.isArray(wall)) wall=[];
+          wall.push({name:name,date:todayKey(),shards:readShards(),played:played,wins:wins,streak:streak});
+          lsSet('bf-record-wall',JSON.stringify(wall.slice(-20)));
+          var m=document.getElementById('wall-msg'); if(m){ m.textContent='Saved to your wall on this device — not shared with anyone.'; m.className='form-msg ok'; }
+          renderWall();
+        }); }
+
+        /* ---- Challenge a friend (code-based; no page URL involved) ---- */
+        function showChallengeBanner(p){
+          var b=document.getElementById('friend-banner'); if(!b||!p) return;
+          b.textContent='';
+          var head=document.createElement('b'); head.textContent='A friend challenged you.';
+          var shards=document.createElement('b'); shards.textContent=fmt(Number(p.shards)||0);
+          b.appendChild(head);
+          b.appendChild(document.createTextNode(' Their record when they sent this: '));
+          b.appendChild(shards);
+          b.appendChild(document.createTextNode(' Ember Shards · '+fmt(Number(p.played)||0)+' games played · '+fmt(Number(p.wins)||0)+' wins. The challenges for '+(typeof p.d==='string'?p.d:'today')+' are the same three waiting for you below — finish them and claim your reward.'));
+          b.classList.add('show');
+        }
+        function decodeChallenge(code){
+          try{ return JSON.parse(decodeURIComponent(escape(atob(String(code).trim())))); }catch(e){ return null; }
+        }
+        var chBtn=document.getElementById('challenge-btn');
+        if(chBtn){ chBtn.addEventListener('click',function(){
+          var keys={mini:'bf-mini-stats',board:'bf-board-stats',card:'bf-card-stats'}; var played=0,wins=0;
+          ['mini','board','card'].forEach(function(g){ var s=readStats(keys[g]); if(s){ played+=pickNum(s,['played','gamesPlayed','games','plays','matches','runs','gamesStarted','totalGames'])||0; wins+=pickNum(s,['wins','victories','won','gamesWon','matchesWon','duelsWon'])||0; } });
+          var payload={d:todayKey(),games:['Forge Defense','The Forge Road','Card Battler'],shards:readShards(),played:played,wins:wins};
+          var code=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+          var msg=document.getElementById('challenge-msg');
+          function done(ok){ if(msg){ msg.textContent=ok?'Challenge code copied — send it to a friend and dare them to match your record. They paste it in the box here.':'Copy failed — your browser blocked it.'; msg.className='form-msg '+(ok?'ok':'err'); } }
+          if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(function(){done(true);},function(){done(false);}); } else done(false);
+        }); }
+        var chForm=document.getElementById('challenge-form');
+        if(chForm){ chForm.addEventListener('submit',function(ev){ ev.preventDefault();
+          var raw=(document.getElementById('challenge-input').value||'').trim();
+          var m=/challenge=([A-Za-z0-9+/=]+)/.exec(raw); var p=decodeChallenge(m?m[1]:raw);
+          var msg=document.getElementById('challenge-msg');
+          if(p){ showChallengeBanner(p); document.getElementById('friend-banner').scrollIntoView({behavior:'smooth',block:'center'}); if(msg){ msg.textContent='Challenge loaded — see the banner above.'; msg.className='form-msg ok'; } }
+          else if(msg){ msg.textContent='That code doesn\u2019t look right — check it and try again.'; msg.className='form-msg err'; }
+        }); }
+        (function incoming(){
+          var m=/[?&]challenge=([^&]+)/.exec(location.search||''); if(!m) return;
+          var p=decodeChallenge(m[1]); if(p) showChallengeBanner(p);
+        })();
+
+        /* ---- Onboarding tour (bf-onboarded, one-time +25) ---- */
+        var TOUR=[
+          {tag:'Welcome · Step 1 of 4',title:'Welcome to the Forge Lobby',text:'Three complete games from Bloodline Forge: The Awakened Saga™ live here — Forge Defense, The Forge Road, and Card Battler. A ninety-second tour, then the Forge is yours.',btn:'Begin →'},
+          {tag:'The Wallet · Step 2 of 4',title:'One wallet, every game',text:'Ember Shards of the First Spark — fragments of the Living Sigil — are earned in all three games and land in one shared wallet, the counter in the top bar. Earn at the wall, spend at the war-table.',btn:'Next →'},
+          {tag:'The Days · Step 3 of 4',title:'Dailies, streaks, and the Shop',text:'Three daily challenges, three conditions each, reset at midnight. Keep a streak alive and your rewards multiply — ×1.5 at 3 days, ×2 at 7. Shards buy titles, card backs, and Sigil Fragments in the Shard Shop.',btn:'Next →'},
+          {tag:'Your Record · Step 4 of 4',title:'Your record lives here',text:'Everything — shards, wins, streaks, achievements — saves on this device, no account needed. And to start your climb: +25 Ember Shards, on the Forge. Go make the glass hum.',btn:'Claim +25 shards & play'}
+        ];
+        var tourIdx=0;
+        function showTourStep(){
+          var s=TOUR[tourIdx];
+          document.getElementById('tour-tag').textContent=s.tag;
+          document.getElementById('tour-title').textContent=s.title;
+          document.getElementById('tour-text').textContent=s.text;
+          document.getElementById('tour-next').textContent=s.btn;
+        }
+        function endTour(grant){
+          document.getElementById('tour-overlay').classList.remove('show');
+          lsSet('bf-onboarded','1');
+          if(grant&&lsGet('bf-onboard-bonus')!=='1'){ lsSet('bf-onboard-bonus','1'); writeShards(readShards()+25); var hs=document.getElementById('hud-shards'); if(hs) hs.textContent=fmt(readShards()); var ss=document.getElementById('stat-shards'); if(ss) ss.textContent=fmt(readShards()); }
+          renderShop(); renderRank(); trackCaps();
+        }
+        if(lsGet('bf-onboarded')!=='1'){
+          var ov=document.getElementById('tour-overlay'); if(ov){ ov.classList.add('show'); showTourStep();
+            document.getElementById('tour-next').addEventListener('click',function(){ if(tourIdx<TOUR.length-1){ tourIdx++; showTourStep(); } else endTour(true); });
+            document.getElementById('tour-skip').addEventListener('click',function(){ endTour(false); });
+          }
+        }
+
+        renderShop(); renderRank(); trackCaps(); renderWall();
+        window.addEventListener('focus',function(){ setTimeout(function(){ renderShop(); renderRank(); trackCaps(); renderWall(); },80); });
+      })();
+    </script>
+    <script>
+      (function () {
+        'use strict';
+        /* ===== v6 Depth systems: bf-meta (Forge Level/XP + Season Pass), bf-quests, bf-missions, bf-login =====
+           All progress is derived from the real shared keys: bf-shards, bf-mini-stats, bf-board-stats,
+           bf-card-stats, bf-achievements, bf-cosmetics, bf-daily-claim. Nothing here invents numbers. */
+        function lsGet(k){ try{return window.localStorage.getItem(k);}catch(e){return null;} }
+        function lsSet(k,v){ try{window.localStorage.setItem(k,v);}catch(e){} }
+        function parseJ(raw){ if(raw==null) return null; try{return JSON.parse(raw);}catch(e){return null;} }
+        function fmt(n){ return Number(n).toLocaleString('en-US'); }
+        function readShards(){ var raw=lsGet('bf-shards'); if(raw==null) return 0; var n=Number(raw); if(isFinite(n)) return Math.max(0,Math.floor(n)); var o=parseJ(raw); if(o&&typeof o==='object'){ var keys=['balance','total','count','shards','amount','value']; for(var i=0;i<keys.length;i++){ if(typeof o[keys[i]]==='number') return Math.max(0,Math.floor(o[keys[i]])); } } return 0; }
+        function writeShards(n){ lsSet('bf-shards',String(Math.max(0,Math.floor(n)))); }
+        function readStats(k){ var o=parseJ(lsGet(k)); return (o&&typeof o==='object'&&!Array.isArray(o))?o:null; }
+        function pickNum(o,keys){ if(!o) return null; for(var i=0;i<keys.length;i++){ var v=o[keys[i]]; if(typeof v==='number'&&isFinite(v)) return v; if(typeof v==='string'&&v.trim()!==''&&isFinite(Number(v))) return Number(v); } return null; }
+        function playedOf(s){ return pickNum(s,['played','gamesPlayed','games','plays','matches','runs','gamesStarted','totalGames'])||0; }
+        function winsOf(s){ return pickNum(s,['wins','victories','won','gamesWon','matchesWon','duelsWon'])||0; }
+        function toDate(v){ if(v==null) return null; if(typeof v==='number'&&isFinite(v)){ var d=new Date(v<1e11?v*1000:v); return isNaN(d.getTime())?null:d; } if(typeof v==='string'&&v.trim()!==''){ var d2=new Date(v); return isNaN(d2.getTime())?null:d2; } return null; }
+        function sameDay(a,b){ return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+        function playedToday(s){ if(!s) return false; var t=new Date(); var keys=['lastPlayed','lastPlayedAt','lastPlayedDate','lastPlay','lastGameAt','lastDate','updatedAt']; for(var i=0;i<keys.length;i++){ if(sameDay(toDate(s[keys[i]]),t)) return true; } if(s.daily&&typeof s.daily==='object'){ var dd=toDate(s.daily.date||s.daily.day); var dp=pickNum(s.daily,['played','games','count']); if(sameDay(dd,t)&&dp!=null&&dp>0) return true; } return false; }
+        function pad(n){ return ('0'+n).slice(-2); }
+        function dayKeyOf(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+        function todayKey(){ return dayKeyOf(new Date()); }
+        function yesterdayKey(){ var d=new Date(); d.setDate(d.getDate()-1); return dayKeyOf(d); }
+        function weekKey(){ var d=new Date(); var onejan=new Date(d.getFullYear(),0,1); var wk=Math.ceil((((d-onejan)/86400000)+onejan.getDay()+1)/7); return d.getFullYear()+'-W'+wk; }
+        function monthKey(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1); }
+        function readCos(){ var o=parseJ(lsGet('bf-cosmetics')); if(!o||typeof o!=='object') o={}; if(!Array.isArray(o.owned)) o.owned=[]; if(typeof o.fragments!=='number') o.fragments=0; if(!o.powers||typeof o.powers!=='object') o.powers={}; return o; }
+        function writeCos(o){ lsSet('bf-cosmetics',JSON.stringify(o)); }
+        function achCount(){ var a=parseJ(lsGet('bf-achievements')); if(Array.isArray(a)) return a.length; if(a&&typeof a==='object'){ if(Array.isArray(a.list)) return a.list.length; if(Array.isArray(a.unlocked)) return a.unlocked.length; var n=0; for(var k in a){ if(Object.prototype.hasOwnProperty.call(a,k)&&a[k]) n++; } return n; } return 0; }
+        function championWins(s){ var out={}; if(!s) return out; var cands=[s.championWins,s.winsByChampion,s.champions,s.perChampion,s.byChampion,s.championRecord]; for(var i=0;i<cands.length;i++){ var c=cands[i]; if(c&&typeof c==='object'&&!Array.isArray(c)){ for(var k in c){ if(!Object.prototype.hasOwnProperty.call(c,k)) continue; var v=c[k]; if(typeof v==='number'&&v>0) out[k]=v; else if(v&&typeof v==='object'){ var w=pickNum(v,['wins','won','victories']); if(w!=null&&w>0) out[k]=w; } } } if(Array.isArray(c)){ for(var j=0;j<c.length;j++){ var e=c[j]; if(e&&typeof e==='object'){ var nm=e.name||e.champion||e.id; var w2=pickNum(e,['wins','won','victories']); if(nm&&w2!=null&&w2>0) out[nm]=w2; } } } } return out; }
+
+        var GAME_KEYS={mini:'bf-mini-stats',board:'bf-board-stats',card:'bf-card-stats'};
+        function snapshot(){
+          var per={},played=0,wins=0,bestWave=0;
+          ['mini','board','card'].forEach(function(g){ var s=readStats(GAME_KEYS[g]); per[g]={s:s,played:playedOf(s),wins:winsOf(s),today:playedToday(s)}; played+=per[g].played; wins+=per[g].wins; if(g==='mini'&&s){ var w=pickNum(s,['bestWave','highestWave','maxWave']); if(w!=null) bestWave=w; } });
+          return {per:per,played:played,wins:wins,bestWave:bestWave,shards:readShards(),ach:achCount(),cos:readCos(),champs:championWins(per.board.s)};
+        }
+
+        /* ---- bf-meta: XP, gross shard earnings, daily-claim dates, play log, owned titles, claims ---- */
+        function xpStepCost(level){ return 80+(level-1)*20; } /* XP to go from level -> level+1 */
+        function xpStart(level){ var t=0; for(var l=1;l<level;l++) t+=xpStepCost(l); return t; }
+        function levelFromXp(xp){ var lvl=1; while(lvl<50&&xp>=xpStart(lvl+1)) lvl++; return lvl; }
+        function readMeta(){ var m=parseJ(lsGet('bf-meta')); if(!m||typeof m!=='object') m={}; if(typeof m.xp!=='number') m.xp=0; if(typeof m.lastPlayed!=='number') m.lastPlayed=null; if(typeof m.lastWins!=='number') m.lastWins=null; if(typeof m.lastAch!=='number') m.lastAch=null; if(typeof m.lastBalance!=='number') m.lastBalance=null; if(typeof m.gross!=='number') m.gross=0; if(!Array.isArray(m.claimedLevels)) m.claimedLevels=[]; if(!Array.isArray(m.claimedSeason)) m.claimedSeason=[]; if(!Array.isArray(m.dailyClaimDates)) m.dailyClaimDates=[]; if(!Array.isArray(m.ownedTitles)) m.ownedTitles=[]; if(!m.playLog||typeof m.playLog!=='object') m.playLog={}; return m; }
+        function writeMeta(m){ lsSet('bf-meta',JSON.stringify(m)); }
+        function syncMeta(snap){
+          var m=readMeta(); var fresh=(m.lastPlayed===null);
+          if(fresh){
+            /* First depth visit: credit XP for the record already earned on this device. */
+            m.xp=snap.played*10+snap.wins*25+snap.ach*50;
+            m.gross=0; m.fresh=false;
+          } else {
+            var dp=Math.max(0,snap.played-m.lastPlayed), dw=Math.max(0,snap.wins-m.lastWins), da=Math.max(0,snap.ach-m.lastAch);
+            if(dp||dw||da) m.xp+=dp*10+dw*25+da*50;
+            if(typeof m.lastBalance==='number'&&snap.shards>m.lastBalance) m.gross+=snap.shards-m.lastBalance;
+          }
+          m.lastPlayed=snap.played; m.lastWins=snap.wins; m.lastAch=snap.ach; m.lastBalance=snap.shards;
+          /* Daily-set claims feed XP once per date (+60). */
+          var claimDate=lsGet('bf-daily-claim');
+          if(claimDate&&/^\d{4}-\d{2}-\d{2}$/.test(claimDate)&&m.dailyClaimDates.indexOf(claimDate)===-1){ m.dailyClaimDates.push(claimDate); if(!fresh) m.xp+=60; }
+          if(m.dailyClaimDates.length>62) m.dailyClaimDates=m.dailyClaimDates.slice(-62);
+          /* Play log: which games reported play today (drives cross-game checks). */
+          var tk=todayKey(); var entry=m.playLog[tk]||[];
+          ['mini','board','card'].forEach(function(g){ if(snap.per[g].today&&entry.indexOf(g)===-1) entry.push(g); });
+          if(entry.length) m.playLog[tk]=entry;
+          var logKeys=Object.keys(m.playLog).sort(); while(logKeys.length>14){ delete m.playLog[logKeys.shift()]; }
+          writeMeta(m); return m;
+        }
+        function grantShards(n){ if(n>0){ writeShards(readShards()+n); var m=readMeta(); m.lastBalance=readShards(); writeMeta(m); } syncShardDisplays(); }
+        function grantXp(n){ if(n>0){ var m=readMeta(); m.xp+=n; writeMeta(m); } }
+        function grantFragment(){ var c=readCos(); c.fragments+=1; writeCos(c); var sf=document.getElementById('season-fragments'); if(sf) sf.textContent=fmt(c.fragments); var shf=document.getElementById('shop-fragments'); if(shf) shf.textContent=fmt(c.fragments); }
+        function grantCosmetic(id){ var c=readCos(); if(c.owned.indexOf(id)===-1){ c.owned.push(id); writeCos(c); } var sc=document.getElementById('season-cosmetics'); if(sc) sc.textContent=fmt(c.owned.length); }
+        function grantTitle(name){ var m=readMeta(); if(m.ownedTitles.indexOf(name)===-1){ m.ownedTitles.push(name); writeMeta(m); } }
+        function syncShardDisplays(){ var v=fmt(readShards()); ['hud-shards','stat-shards','shop-wallet'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=v; }); }
+
+        /* ---- Level rewards ---- */
+        var LEVEL_SPECIAL={3:{title:'Spark-Bearer'},5:{frag:1,glow:'level-glow-5',glowName:'Ember Glow'},8:{title:'Trial-Proven'},10:{frag:1,cardback:'level-back-10',backName:'Sigil Card Back'},15:{frag:1,title:'Road Veteran'},20:{frag:2,glow:'level-glow-20',glowName:'Goldfire Aura'},25:{frag:2,title:'Ashen Duelist'},30:{frag:2,cardback:'level-back-30',backName:'Crown Card Back'},35:{frag:2,title:'Keeper of Trials'},40:{frag:3,glow:'level-glow-40',glowName:'Lordly Radiance'},45:{frag:3,title:'Forge Legend'},50:{frag:5,title:'Ember Lord Ascendant'}};
+        function levelReward(level){ var r={shards:20+level*5,tokens:5+(level%5===0?20:0)}; var sp=LEVEL_SPECIAL[level]; if(sp){ if(sp.frag) r.frag=sp.frag; if(sp.title) r.title=sp.title; if(sp.glow) r.glow=sp.glow; if(sp.glowName) r.glowName=sp.glowName; if(sp.cardback) r.cardback=sp.cardback; if(sp.backName) r.backName=sp.backName; } return r; }
+        function rewardText(r){ var bits=[fmt(r.shards)+' shards']; if(r.tokens) bits.push(fmt(r.tokens)+' Forge Tokens'); if(r.frag) bits.push(r.frag+' Sigil Fragment'+(r.frag>1?'s':'')); if(r.title) bits.push('title “'+r.title+'”'); if(r.glowName) bits.push('glow: '+r.glowName); if(r.backName) bits.push('card back: '+r.backName); return bits.join(' · '); }
+        function applyLevelReward(level){ var r=levelReward(level); grantShards(r.shards); if(r.tokens&&window.BFTokens) window.BFTokens.grant(r.tokens); if(r.frag) for(var i=0;i<r.frag;i++) grantFragment(); if(r.title) grantTitle(r.title); if(r.glow) grantCosmetic(r.glow); if(r.cardback) grantCosmetic(r.cardback); }
+
+        /* ---- Quest / mission period baselines (bf-quests, bf-missions) ---- */
+        function baseSnap(snap,meta){ return {played:snap.played,wins:snap.wins,gross:meta.gross,perPlayed:{mini:snap.per.mini.played,board:snap.per.board.played,card:snap.per.card.played},perWins:{mini:snap.per.mini.wins,board:snap.per.board.wins,card:snap.per.card.wins}}; }
+        function ensurePeriod(store,keyName,curKey,snap,meta){ if(store[keyName]!==curKey||!store.base){ store[keyName]=curKey; store.base=baseSnap(snap,meta); store.claimed=[]; } if(!Array.isArray(store.claimed)) store.claimed=[]; return store; }
+        function readQuests(snap,meta){ var q=parseJ(lsGet('bf-quests')); if(!q||typeof q!=='object') q={}; ensurePeriod(q,'day',todayKey(),snap,meta); if(q.week!==weekKey()){ q.week=weekKey(); q.weekBase=baseSnap(snap,meta); q.weekClaimed=[]; } if(!Array.isArray(q.weekClaimed)) q.weekClaimed=[]; if(!q.weekBase) q.weekBase=baseSnap(snap,meta); if(q.month!==monthKey()){ q.month=monthKey(); q.monthBase=baseSnap(snap,meta); q.monthClaimed=[]; } if(!Array.isArray(q.monthClaimed)) q.monthClaimed=[]; if(!q.monthBase) q.monthBase=baseSnap(snap,meta); lsSet('bf-quests',JSON.stringify(q)); return q; }
+        function delta(cur,base){ return Math.max(0,cur-base); }
+        function creaturesUnlocked(snap){ var n=0; if(snap.per.mini.played>0) n+=3; if(snap.per.card.played>0) n+=3; if(snap.per.board.played>0) n+=4; return n; }
+        function cardsUnlocked(snap){ if(snap.per.card.played<=0) return 0; return Math.min(47,15+snap.per.card.wins); }
+        function weekDailySets(meta){ var wk=weekKey(); var yr=Number(wk.split('-W')[0]), wn=Number(wk.split('-W')[1]); var count=0; meta.dailyClaimDates.forEach(function(d){ var dt=new Date(d+'T12:00:00'); if(isNaN(dt.getTime())) return; var onejan=new Date(dt.getFullYear(),0,1); var w=Math.ceil((((dt-onejan)/86400000)+onejan.getDay()+1)/7); if(dt.getFullYear()===yr&&w===wn) count++; }); return count; }
+        function playedAllToday(meta,snap){ var set={}; var tk=todayKey(); (meta.playLog[tk]||[]).forEach(function(g){ set[g]=1; }); ['mini','board','card'].forEach(function(g){ if(snap.per[g].today) set[g]=1; }); return Object.keys(set).length; }
+
+        var QUESTS=[
+          {id:'q-d-play3',period:'daily',title:'Warm the Forge',desc:'Play any 3 games today, across any of the three doors.',target:3,shards:30,xp:20,prog:function(c){ return delta(c.snap.played,c.q.base.played); }},
+          {id:'q-d-win2',period:'daily',title:'Two Victories',desc:'Win 2 games today — any game counts.',target:2,shards:40,xp:30,prog:function(c){ return delta(c.snap.wins,c.q.base.wins); }},
+          {id:'q-d-each',period:'daily',title:'Three Doors',desc:'Play each of the three games at least once today.',target:3,shards:50,xp:40,prog:function(c){ var n=0; ['mini','board','card'].forEach(function(g){ if(delta(c.snap.per[g].played,c.q.base.perPlayed[g])>0||c.snap.per[g].today) n++; }); return n; }},
+          {id:'q-w-duels5',period:'weekly',title:'Win 5 Duels',desc:'Win 5 duels in Card Battler this week.',target:5,shards:150,xp:100,prog:function(c){ return delta(c.snap.per.card.wins,c.q.weekBase.perWins.card); }},
+          {id:'q-w-shards1000',period:'weekly',title:'Earn 1,000 Shards in a Week',desc:'Gross Ember Shards earned this week — rewards and quest payouts count, spending does not subtract.',target:1000,shards:200,xp:120,prog:function(c){ return delta(c.meta.gross,c.q.weekBase.gross); }},
+          {id:'q-w-champs',period:'weekly',title:'Win a Race with Every Champion',desc:'Win a Forge Road race as each different champion. Counted from the champion wins The Forge Road reports on this device.',target:4,shards:250,xp:150,prog:function(c){ return Object.keys(c.snap.champs).length; },targetDyn:function(c){ var n=Object.keys(c.snap.champs).length; return Math.max(4,n); }},
+          {id:'q-w-dailies3',period:'weekly',title:'Three Full Days',desc:'Complete and claim the full daily challenge set on 3 different days this week.',target:3,shards:150,xp:100,prog:function(c){ return weekDailySets(c.meta); }},
+          {id:'q-w-races3',period:'weekly',title:'Road Winner',desc:'Win 3 races on The Forge Road this week.',target:3,shards:120,xp:80,prog:function(c){ return delta(c.snap.per.board.wins,c.q.weekBase.perWins.board); }},
+          {id:'q-m-trial10',period:'monthly',title:'Survive Trial 10',desc:'Reach wave / Trial 10 in Forge Defense — your best wave on record.',target:10,shards:300,xp:200,prog:function(c){ return c.snap.bestWave; }},
+          {id:'q-m-bestiary',period:'monthly',title:'Complete the Bestiary',desc:'Encounter all 10 Bestiary creatures by playing the games they live in.',target:10,shards:250,xp:200,prog:function(c){ return creaturesUnlocked(c.snap); }},
+          {id:'q-m-shards5000',period:'monthly',title:'Earn 5,000 Shards in a Month',desc:'Gross Ember Shards earned this month, across everything.',target:5000,shards:400,xp:250,prog:function(c){ return delta(c.meta.gross,c.q.monthBase.gross); }},
+          {id:'q-m-wins25',period:'monthly',title:'25 Victories',desc:'Win 25 games all-time across the three games.',target:25,shards:300,xp:200,prog:function(c){ return c.snap.wins; }},
+          {id:'q-m-level10',period:'monthly',title:'Reach Forge Level 10',desc:'Climb the meta track to Forge Level 10.',target:10,shards:200,xp:150,prog:function(c){ return levelFromXp(c.meta.xp); }},
+          {id:'q-m-collect5',period:'monthly',title:'Collector of the Forge',desc:'Own 5 cosmetics — titles, glows, card backs, tokens, and fragments forged in the Shard Shop and beyond.',target:5,shards:200,xp:150,prog:function(c){ return c.snap.cos.owned.length; }}
+        ];
+        var MISSIONS=[
+          {id:'m-play-all-today',period:'daily',title:'One Forge, Three Fires',desc:'Play all three games today — Forge Defense, The Forge Road, and Card Battler, one day, one wallet.',target:3,shards:75,xp:60,prog:function(c){ return playedAllToday(c.meta,c.snap); }},
+          {id:'m-win-each-week',period:'weekly',title:'Win One of Each',desc:'Win at least one game in each of the three games this week. The true cross-game test.',target:3,shards:200,xp:150,prog:function(c){ var n=0; ['mini','board','card'].forEach(function(g){ if(delta(c.snap.per[g].wins,c.missions.weekBase.perWins[g])>0) n++; }); return n; }},
+          {id:'m-shards-week',period:'weekly',title:'The Shard Circuit',desc:'Earn 500 shards this week by rotating games — dailies and quests pay best, farming one game pays half past the cap.',target:500,shards:150,xp:100,prog:function(c){ return delta(c.meta.gross,c.missions.weekBase.gross); }}
+        ];
+        function readMissions(snap,meta){ var ms=parseJ(lsGet('bf-missions')); if(!ms||typeof ms!=='object') ms={}; if(ms.day!==todayKey()){ ms.day=todayKey(); ms.dayBase=baseSnap(snap,meta); ms.dayClaimed=[]; } if(!ms.dayBase) ms.dayBase=baseSnap(snap,meta); if(!Array.isArray(ms.dayClaimed)) ms.dayClaimed=[]; if(ms.week!==weekKey()){ ms.week=weekKey(); ms.weekBase=baseSnap(snap,meta); ms.weekClaimed=[]; ms.bonusClaimed=false; } if(!ms.weekBase) ms.weekBase=baseSnap(snap,meta); if(!Array.isArray(ms.weekClaimed)) ms.weekClaimed=[]; lsSet('bf-missions',JSON.stringify(ms)); return ms; }
+
+        /* ---- Login calendar (bf-login) ---- */
+        var LOGIN_REWARDS=[{shards:25,label:'25 shards'},{shards:40,label:'40 shards'},{shards:50,title:'Dawn Keeper',label:'50 shards + title “Dawn Keeper”'},{shards:75,label:'75 shards'},{shards:100,glow:'login-glow-5',glowName:'Dawn Glow',label:'100 shards + Dawn Glow'},{shards:125,label:'125 shards'},{shards:150,frag:1,tokens:25,label:'150 shards + 1 Sigil Fragment + 25 Forge Tokens'}];
+        function readLogin(){ var l=parseJ(lsGet('bf-login')); if(!l||typeof l!=='object') l={}; if(typeof l.day!=='number') l.day=0; if(typeof l.lastDate!=='string') l.lastDate=null; return l; }
+        function nextLoginDay(l){ if(l.lastDate===todayKey()) return null; if(l.lastDate===yesterdayKey()) return (l.day%7)+1; return 1; }
+
+        /* ---- Season pass ---- */
+        var SEASON_SPECIAL={5:{cardback:'season-back-5',backName:'Season Sigil Back'},7:{title:'First Spark Adept'},10:{frag:1},12:{glow:'season-glow-12',glowName:'Season Ember Glow'},14:{title:'Sigil Keeper'},15:{frag:1},18:{cardback:'season-back-18',backName:'Ember Lord Back'},20:{frag:2,title:'Season I Champion'}};
+        function seasonReward(t){ var r={shards:25*t}; var sp=SEASON_SPECIAL[t]; if(sp){ if(sp.frag) r.frag=sp.frag; if(sp.title) r.title=sp.title; if(sp.glow) r.glow=sp.glow; if(sp.glowName) r.glowName=sp.glowName; if(sp.cardback) r.cardback=sp.cardback; if(sp.backName) r.backName=sp.backName; } return r; }
+        function seasonTier(xp){ return Math.min(20,Math.floor(xp/200)+1); }
+
+        /* ---- Rendering ---- */
+        function barHtml(cur,target){ var pct=target>0?Math.min(100,Math.round(cur/target*100)):0; return '<div class="qbar"><div class="qbar-fill" style="width:'+pct+'%"></div></div><div class="qbar-label"><span>Progress</span><b>'+fmt(Math.min(cur,target))+' / '+fmt(target)+'</b></div>'; }
+        function claimButton(label,enabled,claimed){ var b=document.createElement('button'); b.type='button'; b.className='buy-btn'+(claimed?' owned':''); b.textContent=claimed?'✓ Claimed':label; b.disabled=!enabled||claimed; return b; }
+        function renderLevel(meta){
+          var lvl=levelFromXp(meta.xp); var start=xpStart(lvl); var next=lvl>=50?null:xpStart(lvl+1);
+          var num=document.getElementById('meta-level'); if(num) num.textContent=String(lvl);
+          var txt=document.getElementById('meta-xp-text'); if(txt) txt.textContent=fmt(meta.xp)+' XP total';
+          var nx=document.getElementById('meta-xp-next'); var fill=document.getElementById('meta-xp-fill'); var bar=document.getElementById('meta-xp-bar');
+          var pct=next?Math.round((meta.xp-start)/(next-start)*100):100;
+          if(nx) nx.textContent=next?('Level '+(lvl+1)+' at '+fmt(next)+' XP'):'Max level';
+          if(fill) fill.style.width=Math.max(2,pct)+'%'; if(bar) bar.setAttribute('aria-valuenow',String(pct));
+          var teaser=document.getElementById('meta-next');
+          if(teaser){ if(lvl>=50) teaser.innerHTML='<b>Forge Level 50 — Ember Lord Ascendant.</b> The climb is complete; quests, season tiers, and the Collection still remain.'; else { var r=levelReward(lvl+1); teaser.innerHTML='<b>Next unlock — Level '+(lvl+1)+':</b> '+rewardText(r)+'. '+(next-meta.xp)+' XP to go — '+(next-meta.xp<=35?'one good game could do it.':'a few games will get you there.'); } }
+          var unclaimed=[]; for(var L=2;L<=lvl;L++){ if(meta.claimedLevels.indexOf(L)===-1) unclaimed.push(L); }
+          var btn=document.getElementById('meta-claim');
+          if(btn){ btn.disabled=unclaimed.length===0; btn.textContent=unclaimed.length?('Claim '+unclaimed.length+' level reward'+(unclaimed.length>1?'s':'')+' (Levels '+unclaimed.join(', ')+')'):'No level rewards waiting — level up to earn more'; btn.onclick=function(){ var m2=readMeta(); var got=[]; for(var i=0;i<unclaimed.length;i++){ if(m2.claimedLevels.indexOf(unclaimed[i])===-1){ m2.claimedLevels.push(unclaimed[i]); applyLevelReward(unclaimed[i]); got.push(unclaimed[i]); } } writeMeta(m2); var msg=document.getElementById('meta-msg'); if(msg){ msg.textContent='Claimed rewards for Level'+(got.length>1?'s':'')+' '+got.join(', ')+' — shards, titles, and cosmetics saved on this device.'; msg.className='form-msg ok'; } renderAll(); }; }
+        }
+        function renderCalendar(){
+          var l=readLogin(); var grid=document.getElementById('cal-grid'); if(!grid) return; grid.innerHTML='';
+          var nd=nextLoginDay(l); var claimedToday=(l.lastDate===todayKey());
+          LOGIN_REWARDS.forEach(function(r,i){ var day=i+1; var div=document.createElement('div'); var cls='cal-day'; if(claimedToday&&day===l.day) cls+=' claimed'; else if(!claimedToday&&day===nd) cls+=' today'; else if(day<=(claimedToday?l.day:0)) cls+=' claimed'; else if(nd&&day>nd) cls+=' locked'; div.className=cls; div.innerHTML='<div class="cd-d">Day '+day+'</div><div class="cd-r"></div><div class="cd-r" style="font-size:.72rem;color:var(--faint)"></div>'; div.children[1].textContent=r.label; div.children[2].textContent=(claimedToday&&day===l.day)?'✓ Claimed today':((!claimedToday&&day===nd)?'Claim today':''); grid.appendChild(div); });
+          var btn=document.getElementById('cal-claim'); var msg=document.getElementById('cal-msg');
+          if(btn){ if(claimedToday){ btn.disabled=true; btn.textContent='✓ Claimed today — come back tomorrow for Day '+((l.day%7)+1); } else { btn.disabled=false; btn.textContent='Claim Day '+nd+' reward — '+LOGIN_REWARDS[nd-1].label; }
+            btn.onclick=function(){ var l2=readLogin(); var d=nextLoginDay(l2); if(!d) return; var r=LOGIN_REWARDS[d-1]; grantShards(r.shards); grantXp(15); if(r.title) grantTitle(r.title); if(r.glow) grantCosmetic(r.glow); if(r.frag) grantFragment(); if(r.tokens&&window.BFTokens) window.BFTokens.grant(r.tokens); l2.day=d; l2.lastDate=todayKey(); lsSet('bf-login',JSON.stringify(l2)); if(msg){ msg.textContent='Day '+d+' claimed: '+r.label+'. Come back tomorrow to keep the streak alive.'; msg.className='form-msg ok'; } renderAll(); }; }
+        }
+        function renderMissions(ctx){
+          var grid=document.getElementById('mission-grid'); if(!grid) return; grid.innerHTML='';
+          MISSIONS.forEach(function(mn){
+            var cur=0; try{ cur=mn.prog(ctx); }catch(e){ cur=0; }
+            var claimed=(mn.period==='daily'?ctx.missions.dayClaimed:ctx.missions.weekClaimed).indexOf(mn.id)>-1;
+            var done=cur>=mn.target;
+            var card=document.createElement('div'); card.className='mission-card';
+            var h=document.createElement('h4'); h.textContent=mn.title; card.appendChild(h);
+            var p=document.createElement('p'); p.textContent=mn.desc; card.appendChild(p);
+            var barWrap=document.createElement('div'); barWrap.innerHTML=barHtml(cur,mn.target); card.appendChild(barWrap);
+            var rw=document.createElement('p'); rw.className='m-reward'; rw.textContent='Reward: '+fmt(mn.shards)+' shards + '+fmt(mn.xp)+' XP · '+(mn.period==='daily'?'Today':'This week'); card.appendChild(rw);
+            var btn=claimButton('Claim mission reward',done,claimed);
+            btn.addEventListener('click',function(){ var ms=readMissions(snapshot(),readMeta()); var list=mn.period==='daily'?ms.dayClaimed:ms.weekClaimed; if(list.indexOf(mn.id)>-1) return; list.push(mn.id); lsSet('bf-missions',JSON.stringify(ms)); grantShards(mn.shards); grantXp(mn.xp); if(window.BFTokens) window.BFTokens.grant(5); renderAll(); });
+            card.appendChild(btn); grid.appendChild(card);
+          });
+          var bonus=document.getElementById('mission-bonus');
+          if(bonus){ var both=ctx.missions.weekClaimed.indexOf('m-win-each-week')>-1&&ctx.missions.weekClaimed.indexOf('m-shards-week')>-1;
+            bonus.innerHTML='';
+            var span=document.createElement('span'); span.innerHTML='Weekly bonus: claim both weekly missions to forge <b>+1 Sigil Fragment</b>. ';
+            bonus.appendChild(span);
+            if(ctx.missions.bonusClaimed){ var doneS=document.createElement('b'); doneS.textContent='✓ Bonus forged this week.'; bonus.appendChild(doneS); }
+            else { var bb=claimButton('Forge weekly bonus — +1 Sigil Fragment',both,false); bb.addEventListener('click',function(){ var ms=readMissions(snapshot(),readMeta()); if(ms.bonusClaimed) return; ms.bonusClaimed=true; lsSet('bf-missions',JSON.stringify(ms)); grantFragment(); renderAll(); }); bonus.appendChild(bb); }
+          }
+        }
+        function renderQuests(ctx){
+          var groups={daily:document.getElementById('quest-daily'),weekly:document.getElementById('quest-weekly'),monthly:document.getElementById('quest-monthly')};
+          Object.keys(groups).forEach(function(k){ if(groups[k]) groups[k].innerHTML=''; });
+          QUESTS.forEach(function(q){
+            var host=groups[q.period]; if(!host) return;
+            var target=q.targetDyn?q.targetDyn(ctx):q.target;
+            var cur=0; try{ cur=q.prog(ctx); }catch(e){ cur=0; }
+            var claimedList=q.period==='daily'?ctx.q.claimed:(q.period==='weekly'?ctx.q.weekClaimed:ctx.q.monthClaimed);
+            var claimed=claimedList.indexOf(q.id)>-1; var done=cur>=target;
+            var card=document.createElement('div'); card.className='quest-card'+(done||claimed?' complete':'');
+            var h=document.createElement('h4'); h.textContent=q.title; card.appendChild(h);
+            var p=document.createElement('p'); p.textContent=q.desc; card.appendChild(p);
+            var bw=document.createElement('div'); bw.innerHTML=barHtml(cur,target); card.appendChild(bw);
+            var rw=document.createElement('p'); rw.className='q-reward'; rw.textContent='Reward: '+fmt(q.shards)+' shards + '+fmt(q.xp)+' XP'; card.appendChild(rw);
+            var btn=claimButton('Claim reward',done,claimed);
+            btn.addEventListener('click',function(){ var qq=readQuests(snapshot(),readMeta()); var list=q.period==='daily'?qq.claimed:(q.period==='weekly'?qq.weekClaimed:qq.monthClaimed); if(list.indexOf(q.id)>-1) return; list.push(q.id); lsSet('bf-quests',JSON.stringify(qq)); grantShards(q.shards); grantXp(q.xp); if(window.BFTokens) window.BFTokens.grant(3); var msg=document.getElementById('quest-msg'); if(msg){ msg.textContent='Quest claimed: '+q.title+' — +'+fmt(q.shards)+' shards, +'+fmt(q.xp)+' XP. Saved on this device.'; msg.className='form-msg ok'; } renderAll(); });
+            card.appendChild(btn); host.appendChild(card);
+          });
+        }
+        function renderCollection(ctx){
+          var snap=ctx.snap, meta=ctx.meta, cos=snap.cos;
+          var score=snap.shards+snap.wins*25+snap.ach*50;
+          var LORE=[{n:'First Spark Bearer',min:0,h:'Begin the climb'},{n:'Trial-Walker',min:100,h:'Reach 100 on the Forge Record'},{n:'Sigil-Touched',min:500,h:'Reach 500 on the Forge Record'},{n:"Crown's Shadow",min:1000,h:'Reach 1,000 on the Forge Record'},{n:'Bloodline Tested',min:1750,h:'Reach 1,750 on the Forge Record'},{n:'One Who Made the Glass Hum',min:2500,h:'Reach 2,500 on the Forge Record'}];
+          var titles=[];
+          LORE.forEach(function(t){ titles.push({name:t.n,owned:score>=t.min&&(t.min>0||snap.played>0||snap.shards>0),hint:t.h}); });
+          titles.push({name:'Sigil-Touched (Shop title)',owned:cos.owned.indexOf('title-sigil')>-1,hint:'Buy in the Shard Shop — 150 shards'});
+          titles.push({name:"Crown's Shadow (Shop title)",owned:cos.owned.indexOf('title-crown')>-1,hint:'Buy in the Shard Shop — 300 shards'});
+          titles.push({name:'Dawn Keeper',owned:meta.ownedTitles.indexOf('Dawn Keeper')>-1,hint:'Return 3 days in a row — login calendar Day 3'});
+          Object.keys(LEVEL_SPECIAL).forEach(function(k){ var sp=LEVEL_SPECIAL[k]; if(sp.title) titles.push({name:sp.title,owned:meta.ownedTitles.indexOf(sp.title)>-1,hint:'Reach Forge Level '+k+' and claim the level reward'}); });
+          Object.keys(SEASON_SPECIAL).forEach(function(k){ var sp=SEASON_SPECIAL[k]; if(sp.title) titles.push({name:sp.title,owned:meta.ownedTitles.indexOf(sp.title)>-1,hint:'Reach Season Tier '+k+' and claim it'}); });
+          var glows=[{name:'Goldfire Forge Glow',owned:cos.owned.indexOf('glow-goldfire')>-1,hint:'Buy in the Shard Shop — 250 shards'},{name:'Weekly Ember Glow',owned:cos.owned.some(function(id){ return id.indexOf('weekly-glow-')===0; }),hint:'Earn 500 shards in a week'},{name:'Ember Glow',owned:cos.owned.indexOf('level-glow-5')>-1,hint:'Forge Level 5 reward'},{name:'Dawn Glow',owned:cos.owned.indexOf('login-glow-5')>-1,hint:'Login calendar Day 5'},{name:'Season Ember Glow',owned:cos.owned.indexOf('season-glow-12')>-1,hint:'Season Tier 12 reward'},{name:'Goldfire Aura',owned:cos.owned.indexOf('level-glow-20')>-1,hint:'Forge Level 20 reward'},{name:'Lordly Radiance',owned:cos.owned.indexOf('level-glow-40')>-1,hint:'Forge Level 40 reward'}];
+          var backs=[{name:'Ashen War-Table Card Back',owned:cos.owned.indexOf('cardback-ashen')>-1,hint:'Buy in the Shard Shop — 200 shards'},{name:'Season Sigil Back',owned:cos.owned.indexOf('season-back-5')>-1,hint:'Season Tier 5 reward'},{name:'Sigil Card Back',owned:cos.owned.indexOf('level-back-10')>-1,hint:'Forge Level 10 reward'},{name:'Ember Lord Back',owned:cos.owned.indexOf('season-back-18')>-1,hint:'Season Tier 18 reward'},{name:'Crown Card Back',owned:cos.owned.indexOf('level-back-30')>-1,hint:'Forge Level 30 reward'}];
+          var CREATURES=[{n:'Bloodvine Serpent',g:'mini',gn:'Forge Defense'},{n:'Thornjaw',g:'mini',gn:'Forge Defense'},{n:'Glasshound',g:'mini',gn:'Forge Defense'},{n:'Nightscale Drake',g:'card',gn:'Card Battler'},{n:'Boneharrow',g:'card',gn:'Card Battler'},{n:'Storm Seraph',g:'card',gn:'Card Battler'},{n:'Lumen Moth',g:'board',gn:'The Forge Road'},{n:'Hollow Stag',g:'board',gn:'The Forge Road'},{n:'Mireheart Eel',g:'board',gn:'The Forge Road'},{n:'Moonwraith',g:'board',gn:'The Forge Road'}];
+          var creatures=CREATURES.map(function(cr){ return {name:cr.n,owned:snap.per[cr.g].played>0,hint:'Play '+cr.gn+' to encounter it'}; });
+          var cats=[{title:'Bestiary Creatures',sub:'Met by playing the game each creature lives in.',items:creatures},{title:'Saga & Earned Titles',sub:'Lore titles from your Forge Record, plus shop, level, season, and calendar titles.',items:titles},{title:'Forge Glows',sub:'Earned in the Shop, weekly goal, levels, calendar, and season.',items:glows},{title:'Card Backs',sub:'For the war-table — shop, levels, and season tiers.',items:backs}];
+          var totalItems=creatures.length+titles.length+glows.length+backs.length+47;
+          var ownedItems=creaturesUnlocked(snap)+cardsUnlocked(snap)+titles.filter(function(t){return t.owned;}).length+glows.filter(function(t){return t.owned;}).length+backs.filter(function(t){return t.owned;}).length;
+          var pct=totalItems?Math.round(ownedItems/totalItems*100):0;
+          var pe=document.getElementById('coll-pct'); if(pe) pe.textContent=pct+'%';
+          var ce=document.getElementById('coll-count'); if(ce) ce.textContent=fmt(ownedItems)+' / '+fmt(totalItems);
+          var cf=document.getElementById('coll-fill'); if(cf) cf.style.width=pct+'%';
+          var host=document.getElementById('coll-cats'); if(host){ host.innerHTML=''; cats.forEach(function(cat){ var ownedN=cat.items.filter(function(i){return i.owned;}).length; var div=document.createElement('div'); div.className='coll-cat'; var h=document.createElement('h3'); h.textContent=cat.title+' — '+ownedN+' / '+cat.items.length; div.appendChild(h); var sub=document.createElement('p'); sub.className='cc-sub'; sub.textContent=cat.sub; div.appendChild(sub); var bw=document.createElement('div'); bw.innerHTML=barHtml(ownedN,cat.items.length); div.appendChild(bw); var ul=document.createElement('ul'); ul.className='coll-list'; cat.items.forEach(function(it){ var li=document.createElement('li'); if(!it.owned) li.className='locked'; var b=document.createElement('b'); b.textContent=(it.owned?'✓ ':'🔒 ')+it.name; var s=document.createElement('span'); s.textContent=it.owned?'Unlocked':it.hint; li.appendChild(b); li.appendChild(s); ul.appendChild(li); }); div.appendChild(ul); host.appendChild(div); }); }
+          var CARD_NAMES=['Ember Spark','Living Sigil',"Crown's Writ","Vale's Glass",'Twelfth Trial','Nightscale Drake','Bloodvine Serpent','Thornjaw','Glasshound','Boneharrow','Lumen Moth','Hollow Stag','Storm Seraph','Mireheart Eel','Moonwraith'];
+          var unlocked=cardsUnlocked(snap);
+          var cc=document.getElementById('coll-cards-count'); if(cc) cc.textContent=fmt(unlocked)+' / 47';
+          var cf2=document.getElementById('coll-cards-fill'); if(cf2) cf2.style.width=Math.round(unlocked/47*100)+'%';
+          var tiles=document.getElementById('coll-cards'); if(tiles){ tiles.innerHTML=''; for(var i=0;i<47;i++){ var t=document.createElement('div'); var isU=i<unlocked; t.className='ctile'+(isU?'':' locked'); var nn=document.createElement('span'); nn.className='ct-n'; nn.textContent=isU?(CARD_NAMES[i]||('Card '+(i+1))):'Sealed'; var ss=document.createElement('span'); ss.textContent=isU?(i<15?'Starter set':'Won in duels'):('Card '+(i+1)+' — win duels to unseal'); t.appendChild(nn); t.appendChild(ss); tiles.appendChild(t); } }
+        }
+        function renderSeason(meta){
+          var grid=document.getElementById('season-grid'); if(!grid) return; grid.innerHTML='';
+          var note=document.getElementById('season-xp-note'); if(note) note.textContent=fmt(meta.xp)+' XP — Tier '+seasonTier(meta.xp)+' of 20 reached';
+          for(var t=1;t<=20;t++){
+            var need=(t-1)*200; var reached=meta.xp>=need; var claimed=meta.claimedSeason.indexOf(t)>-1;
+            var r=seasonReward(t);
+            var div=document.createElement('div'); div.className='tier'+(reached?' reached':'');
+            var n=document.createElement('div'); n.className='t-n'; n.textContent='Tier '+t; div.appendChild(n);
+            var rw=document.createElement('div'); rw.className='t-r'; rw.textContent=rewardText(r); div.appendChild(rw);
+            var x=document.createElement('div'); x.className='t-x'; x.textContent=reached?'Unlocked at '+fmt(need)+' XP':('Needs '+fmt(need)+' XP — '+(need-meta.xp)+' to go'); div.appendChild(x);
+            var btn=claimButton('Claim tier reward',reached,claimed);
+            (function(tier){ btn.addEventListener('click',function(){ var m2=readMeta(); if(m2.claimedSeason.indexOf(tier)>-1) return; m2.claimedSeason.push(tier); writeMeta(m2); var rr=seasonReward(tier); grantShards(rr.shards); if(rr.frag) for(var i=0;i<rr.frag;i++) grantFragment(); if(rr.title) grantTitle(rr.title); if(rr.glow) grantCosmetic(rr.glow); if(rr.cardback) grantCosmetic(rr.cardback); var msg=document.getElementById('season-msg'); if(msg){ msg.textContent='Tier '+tier+' claimed: '+rewardText(rr)+'.'; msg.className='form-msg ok'; } renderAll(); }); })(t);
+            div.appendChild(btn); grid.appendChild(div);
+          }
+        }
+        function renderAll(){
+          var snap=snapshot(); var meta=syncMeta(snap); snap=snapshot();
+          var q=readQuests(snap,meta); var missions=readMissions(snap,meta);
+          var ctx={snap:snap,meta:meta,q:q,missions:missions};
+          renderLevel(meta); renderCalendar(); renderMissions(ctx); renderQuests(ctx); renderCollection(ctx); renderSeason(meta);
+          syncShardDisplays();
+        }
+        renderAll();
+        window.addEventListener('focus',function(){ setTimeout(renderAll,120); });
+        document.addEventListener('visibilitychange',function(){ if(!document.hidden) setTimeout(renderAll,120); });
+      })();
+    </script>
+    <script>
+      (function () {
+        'use strict';
+        /* ===== v7 Monetization: Forge Tokens (bf-tokens), Forge Store, Battle Packs, Gear (bf-cosmetics), Premium Pass preview =====
+           Honest by design: the only real-money door today is the Fourthwall merch link. Token packs and the
+           premium pass are labelled on sale soon (December launch) with no checkout and no way to fake a purchase.
+           Tokens are earned in-game via window.BFTokens.grant() calls from the v6 systems (level-ups, quest and
+           mission claims, login Day 7) and spent here on packs and gear. */
+        function lsGet(k){ try{return window.localStorage.getItem(k);}catch(e){return null;} }
+        function lsSet(k,v){ try{window.localStorage.setItem(k,v);}catch(e){} }
+        function parseJ(raw){ if(raw==null) return null; try{return JSON.parse(raw);}catch(e){return null;} }
+        function fmt(n){ return Number(n).toLocaleString('en-US'); }
+        function readShards(){ var raw=lsGet('bf-shards'); if(raw==null) return 0; var n=Number(raw); if(isFinite(n)) return Math.max(0,Math.floor(n)); var o=parseJ(raw); if(o&&typeof o==='object'){ var keys=['balance','total','count','shards','amount','value']; for(var i=0;i<keys.length;i++){ if(typeof o[keys[i]]==='number') return Math.max(0,Math.floor(o[keys[i]])); } } return 0; }
+        function writeShards(n){ lsSet('bf-shards',String(Math.max(0,Math.floor(n)))); }
+        function readCos(){ var o=parseJ(lsGet('bf-cosmetics')); if(!o||typeof o!=='object') o={}; if(!Array.isArray(o.owned)) o.owned=[]; if(typeof o.fragments!=='number') o.fragments=0; if(!o.powers||typeof o.powers!=='object') o.powers={}; if(!o.equipped||typeof o.equipped!=='object') o.equipped={}; return o; }
+        function writeCos(o){ lsSet('bf-cosmetics',JSON.stringify(o)); }
+        function readMetaTitles(){ var m=parseJ(lsGet('bf-meta')); if(!m||typeof m!=='object') m={}; if(!Array.isArray(m.ownedTitles)) m.ownedTitles=[]; return m; }
+        function grantTitle(name){ var m=readMetaTitles(); if(m.ownedTitles.indexOf(name)===-1){ m.ownedTitles.push(name); lsSet('bf-meta',JSON.stringify(m)); } }
+
+        /* ---- Forge Tokens (bf-tokens) ---- */
+        function readTokens(){ var raw=lsGet('bf-tokens'); if(raw==null) return 0; var n=Number(raw); if(isFinite(n)) return Math.max(0,Math.floor(n)); var o=parseJ(raw); if(o&&typeof o==='object'&&typeof o.balance==='number') return Math.max(0,Math.floor(o.balance)); return 0; }
+        function writeTokens(n){ lsSet('bf-tokens',JSON.stringify({balance:Math.max(0,Math.floor(n))})); }
+        function syncTokenDisplays(){ var v=fmt(readTokens()); ['hud-tokens','stat-tokens','store-tokens'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=v; }); }
+        function syncShardDisplays(){ var v=fmt(readShards()); ['hud-shards','stat-shards','shop-wallet'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=v; }); var cos=readCos(); ['season-fragments','shop-fragments'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=fmt(cos.fragments); }); var sc=document.getElementById('season-cosmetics'); if(sc) sc.textContent=fmt(cos.owned.length); }
+        window.BFTokens={
+          balance:function(){ return readTokens(); },
+          grant:function(n){ if(typeof n==='number'&&n>0){ writeTokens(readTokens()+n); syncTokenDisplays(); } }
+        };
+
+        /* ---- Token packs (preview only — no checkout exists yet) ---- */
+        var TOKEN_PACKS=[
+          {name:'Spark Pouch',tokens:60,price:'$4.99'},
+          {name:'Ember Cache',tokens:140,price:'$9.99'},
+          {name:'Crown Vault',tokens:320,price:'$19.99'}
+        ];
+        function renderTokenPacks(){
+          var host=document.getElementById('token-packs'); if(!host) return; host.innerHTML='';
+          TOKEN_PACKS.forEach(function(p){
+            var div=document.createElement('div'); div.className='token-pack';
+            var amt=document.createElement('div'); amt.className='tp-amt'; amt.textContent=fmt(p.tokens); div.appendChild(amt);
+            var nm=document.createElement('div'); nm.className='tp-name'; nm.textContent=p.name+' · Forge Tokens'; div.appendChild(nm);
+            var pr=document.createElement('div'); pr.className='tp-price'; pr.textContent=p.price+' · planned launch price'; div.appendChild(pr);
+            var btn=document.createElement('button'); btn.type='button'; btn.className='buy-btn'; btn.textContent='On sale soon'; btn.disabled=true; div.appendChild(btn);
+            host.appendChild(div);
+          });
+        }
+
+        /* ---- Battle packs (bf-store; one of each per season) ---- */
+        var SEASON_KEY='S1-2026';
+        var PACKS=[
+          {id:'pack-ember',name:'Ember Pack',priceTokens:40,priceShards:600,desc:'The starter war-chest of Season I — a glow, a title, and your first prestige.',contents:['Goldfire Forge Glow','Title: “Emberbound”','1 Sigil Fragment','2 Shield Tokens for your pouch'],grants:{cos:['glow-goldfire'],titles:['Emberbound'],frag:1,powers:{shield:2}}},
+          {id:'pack-sigil',name:'Sigil Pack',priceTokens:90,priceShards:1200,desc:'For the Sigil-Touched — deeper cosmetics and double the prestige.',contents:['Sigil Card Back','Dawn Glow','Title: “Sigil Keeper”','2 Sigil Fragments'],grants:{cos:['level-back-10','login-glow-5'],titles:['Sigil Keeper'],frag:2}},
+          {id:'pack-crown',name:'Crown Pack',priceTokens:180,priceShards:2500,desc:'The season\u2019s crown jewel — the rarest looks in the Forge.',contents:['Crown Card Back','Lordly Radiance Glow','Title: “Crown\u2019s Heir”','3 Sigil Fragments','2 Shield Tokens + 2 Starting Shards'],grants:{cos:['level-back-30','level-glow-40'],titles:["Crown's Heir"],frag:3,powers:{shield:2,startShard:2}}}
+        ];
+        function readStore(){ var o=parseJ(lsGet('bf-store')); if(!o||typeof o!=='object') o={}; if(!o.packs||typeof o.packs!=='object') o.packs={}; return o; }
+        function applyPack(pack){
+          var cos=readCos();
+          pack.grants.cos.forEach(function(id){ if(cos.owned.indexOf(id)===-1) cos.owned.push(id); });
+          cos.fragments+=pack.grants.frag||0;
+          if(pack.grants.powers){ Object.keys(pack.grants.powers).forEach(function(k){ cos.powers[k]=(cos.powers[k]||0)+pack.grants.powers[k]; }); }
+          writeCos(cos);
+          pack.grants.titles.forEach(grantTitle);
+        }
+        function renderPacks(){
+          var host=document.getElementById('pack-grid'); if(!host) return; host.innerHTML='';
+          var store=readStore(); var tokens=readTokens(); var shards=readShards();
+          PACKS.forEach(function(pack){
+            var owned=store.packs[pack.id]===SEASON_KEY;
+            var card=document.createElement('div'); card.className='pack-card';
+            var tag=document.createElement('span'); tag.className='pack-tag'; tag.textContent='Battle Pack · Season I'; card.appendChild(tag);
+            var h=document.createElement('h4'); h.textContent=pack.name; card.appendChild(h);
+            var p=document.createElement('p'); p.textContent=pack.desc; card.appendChild(p);
+            var ul=document.createElement('ul'); ul.className='pack-contents';
+            pack.contents.forEach(function(c){ var li=document.createElement('li'); li.textContent=c; ul.appendChild(li); });
+            card.appendChild(ul);
+            var buy=document.createElement('div'); buy.className='pack-buy';
+            if(owned){
+              var ob=document.createElement('button'); ob.type='button'; ob.className='buy-btn owned'; ob.textContent='✓ Owned — one per season'; ob.disabled=true; buy.appendChild(ob);
+            } else {
+              var bt=document.createElement('button'); bt.type='button'; bt.className='buy-btn'; bt.textContent='Buy — '+fmt(pack.priceTokens)+' Forge Tokens'; bt.disabled=tokens<pack.priceTokens;
+              if(tokens<pack.priceTokens) bt.textContent='Buy — '+fmt(pack.priceTokens)+' Tokens (need '+fmt(pack.priceTokens-tokens)+' more)';
+              bt.addEventListener('click',function(){ buyPack(pack,'tokens'); });
+              var bs=document.createElement('button'); bs.type='button'; bs.className='buy-btn'; bs.textContent='Buy — '+fmt(pack.priceShards)+' shards'; bs.disabled=shards<pack.priceShards;
+              if(shards<pack.priceShards) bs.textContent='Buy — '+fmt(pack.priceShards)+' shards (need '+fmt(pack.priceShards-shards)+' more)';
+              bs.addEventListener('click',function(){ buyPack(pack,'shards'); });
+              buy.appendChild(bt); buy.appendChild(bs);
+            }
+            card.appendChild(buy); host.appendChild(card);
+          });
+        }
+        function buyPack(pack,currency){
+          var store=readStore(); if(store.packs[pack.id]===SEASON_KEY) return;
+          if(currency==='tokens'){ if(readTokens()<pack.priceTokens) return; writeTokens(readTokens()-pack.priceTokens); }
+          else { if(readShards()<pack.priceShards) return; writeShards(readShards()-pack.priceShards); }
+          applyPack(pack);
+          store.packs[pack.id]=SEASON_KEY; lsSet('bf-store',JSON.stringify(store));
+          var msg=document.getElementById('pack-msg'); if(msg){ msg.textContent=pack.name+' opened — glow, title, fragments, and powers are saved in your collection on this device.'; msg.className='form-msg ok'; }
+          renderAll7();
+        }
+
+        /* ---- Skins, armor & upgrades (bf-cosmetics; equip into shared settings) ---- */
+        var SLOT_LABELS={glow:'Forge Glow',cardback:'Card Back',token:'Road Token Skin',champion:'Champion Skin',keeperArmor:'Keeper Armor · Forge Defense',roadArmor:'Champion Armor · Forge Road',cardFrame:'Card Frame · Card Battler'};
+        var GEAR=[
+          {id:'glow-cinderveil',slot:'glow',kind:'Forge Glow · Skin',name:'Cinderveil Glow',shards:300,tokens:30,desc:'A smoke-dark ember glow for the Forge — cinders drifting through goldfire.'},
+          {id:'glow-moonlit',slot:'glow',kind:'Forge Glow · Skin',name:'Moonlit Sigil Glow',shards:450,tokens:45,desc:'A pale moon-silver glow, for the bloodline that walks by night.'},
+          {id:'back-bloodvine',slot:'cardback',kind:'Card Back · Skin',name:'Bloodvine Card Back',shards:350,tokens:35,desc:'Thorny bloodvine wound across scorched bark — the Crown does not hunt. It cultivates.'},
+          {id:'back-glasswing',slot:'cardback',kind:'Card Back · Skin',name:'Glasswing Card Back',shards:500,tokens:50,desc:'Humming glass wings over ember — beautiful, and one crack from ruin.'},
+          {id:'token-obsidian',slot:'token',kind:'Road Token · Skin',name:'Obsidian Road Token',shards:280,tokens:28,desc:'A black-glass champion token for the Forge Road, edged in ember.'},
+          {id:'token-seraph',slot:'token',kind:'Road Token · Skin',name:'Seraph Wing Token',shards:520,tokens:52,desc:'A six-winged token that catches stormlight as it races the Road.'},
+          {id:'champ-nightscale',slot:'champion',kind:'Champion Skin · The Forge Road',name:'Nightscale Champion Livery',shards:650,tokens:65,desc:'Frost-dark livery for your Road champion, cut from the drake\u2019s own scales.'},
+          {id:'champ-seraph',slot:'champion',kind:'Champion Skin · The Forge Road',name:'Storm Seraph Heraldry',shards:800,tokens:80,desc:'Stormlight heraldry for your Road champion — six wings, no mercy.'},
+          {id:'armor-keeper-1',slot:'keeperArmor',kind:'Keeper Armor · Forge Defense',name:'Keeper Armor I — Emberplate',shards:400,tokens:40,desc:'Tier I Keeper armor: ember-forged plate for the last ward on the wall.'},
+          {id:'armor-keeper-2',slot:'keeperArmor',kind:'Keeper Armor · Forge Defense',name:'Keeper Armor II — Sigilplate',shards:750,tokens:75,desc:'Tier II Keeper armor: the Living Sigil etched into every plate.'},
+          {id:'armor-keeper-3',slot:'keeperArmor',kind:'Keeper Armor · Forge Defense',name:'Keeper Armor III — Crownplate',shards:1200,tokens:120,desc:'Tier III Keeper armor: plate worthy of standing against the Crown itself.'},
+          {id:'armor-road',slot:'roadArmor',kind:'Champion Armor · The Forge Road',name:'Roadwarden Barding',shards:450,tokens:45,desc:'Travel-worn champion armor for the long road to the Living Sigil.'},
+          {id:'frame-gilded',slot:'cardFrame',kind:'Card Frame · Card Battler',name:'Gilded War-Table Frame',shards:380,tokens:38,desc:'A gold-leaf frame for your war-table cards — win in style.'},
+          {id:'frame-obsidian',slot:'cardFrame',kind:'Card Frame · Card Battler',name:'Obsidian War-Table Frame',shards:700,tokens:70,desc:'Black-glass frames with ember seams, for the serious duelist.'}
+        ];
+        function gearById(id){ for(var i=0;i<GEAR.length;i++){ if(GEAR[i].id===id) return GEAR[i]; } return null; }
+        function renderGear(){
+          var host=document.getElementById('gear-grid'); if(!host) return; host.innerHTML='';
+          var cos=readCos(); var tokens=readTokens(); var shards=readShards();
+          GEAR.forEach(function(item){
+            var owned=cos.owned.indexOf(item.id)>-1;
+            var equipped=cos.equipped[item.slot]===item.id;
+            var div=document.createElement('div'); div.className='gear-item';
+            var kind=document.createElement('span'); kind.className='shop-kind'; kind.textContent=item.kind; div.appendChild(kind);
+            var h=document.createElement('h4'); h.textContent=item.name; div.appendChild(h);
+            var p=document.createElement('p'); p.textContent=item.desc; div.appendChild(p);
+            var actions=document.createElement('div'); actions.className='gear-actions';
+            if(owned){
+              var eb=document.createElement('button'); eb.type='button'; eb.className='buy-btn'+(equipped?' owned':''); eb.textContent=equipped?'✓ Equipped':'Equip'; eb.disabled=equipped;
+              eb.addEventListener('click',function(){ var c2=readCos(); c2.equipped[item.slot]=item.id; writeCos(c2); var m=document.getElementById('gear-msg'); if(m){ m.textContent=item.name+' equipped — written to the shared forge settings the games read.'; m.className='form-msg ok'; } renderAll7(); });
+              actions.appendChild(eb);
+            } else {
+              var bs=document.createElement('button'); bs.type='button'; bs.className='buy-btn'; bs.textContent=fmt(item.shards)+' shards'; bs.disabled=shards<item.shards;
+              if(shards<item.shards) bs.textContent=fmt(item.shards)+' shards — need '+fmt(item.shards-shards)+' more';
+              bs.addEventListener('click',function(){ buyGear(item,'shards'); });
+              var bt=document.createElement('button'); bt.type='button'; bt.className='buy-btn'; bt.textContent=fmt(item.tokens)+' tokens'; bt.disabled=tokens<item.tokens;
+              if(tokens<item.tokens) bt.textContent=fmt(item.tokens)+' tokens — need '+fmt(item.tokens-tokens)+' more';
+              bt.addEventListener('click',function(){ buyGear(item,'tokens'); });
+              actions.appendChild(bs); actions.appendChild(bt);
+            }
+            div.appendChild(actions); host.appendChild(div);
+          });
+          var lo=document.getElementById('loadout');
+          if(lo){
+            var parts=[];
+            Object.keys(SLOT_LABELS).forEach(function(slot){ var id=cos.equipped[slot]; var g=id?gearById(id):null; if(g) parts.push(SLOT_LABELS[slot]+': <b>'+g.name+'</b>'); });
+            lo.innerHTML=parts.length?('Your equipped loadout — saved in the shared forge settings (bf-cosmetics) the games read: '+parts.join(' · ')):'Your loadout: nothing equipped yet — buy a skin or armor piece above and it equips here.';
+          }
+        }
+        function buyGear(item,currency){
+          var cos=readCos(); if(cos.owned.indexOf(item.id)>-1) return;
+          if(currency==='tokens'){ if(readTokens()<item.tokens) return; writeTokens(readTokens()-item.tokens); }
+          else { if(readShards()<item.shards) return; writeShards(readShards()-item.shards); }
+          cos.owned.push(item.id); cos.equipped[item.slot]=item.id; writeCos(cos);
+          var m=document.getElementById('gear-msg'); if(m){ m.textContent=item.name+' is yours — and equipped. Saved on this device in bf-cosmetics.'; m.className='form-msg ok'; }
+          renderAll7();
+        }
+
+        /* ---- Premium Season Pass track (preview — locked until the December launch) ---- */
+        var PREMIUM_REWARDS=['+15 Forge Tokens','Card Back: Bloodvine (premium)','+25 Forge Tokens','Skin: Cinderveil Glow','+30 Forge Tokens','+1 Sigil Fragment','Title: “Premium Adept”','+40 Forge Tokens','Card Frame: Gilded (premium)','+50 Forge Tokens · +1 Sigil Fragment','Skin: Moonlit Sigil Glow','+60 Forge Tokens','Champion Skin: Nightscale Livery','+75 Forge Tokens','Title: “Premium Keeper”','Skin: Glasswing Card Back','+90 Forge Tokens','Card Frame: Obsidian (premium)','+100 Forge Tokens','+2 Sigil Fragments · Title: “Crown Ascendant”'];
+        function renderPremium(){
+          var host=document.getElementById('premium-grid'); if(!host) return; host.innerHTML='';
+          PREMIUM_REWARDS.forEach(function(rw,i){
+            var div=document.createElement('div'); div.className='tier premium';
+            var n=document.createElement('div'); n.className='t-n'; n.textContent='Premium Tier '+(i+1); div.appendChild(n);
+            var r=document.createElement('div'); r.className='t-r'; r.textContent=rw; div.appendChild(r);
+            var lock=document.createElement('div'); lock.className='t-lock'; lock.textContent='🔒 Premium — on sale soon'; div.appendChild(lock);
+            host.appendChild(div);
+          });
+        }
+
+        function renderAll7(){ syncTokenDisplays(); renderTokenPacks(); renderPacks(); renderGear(); renderPremium(); syncShardDisplays(); }
+        renderAll7();
+        window.addEventListener('focus',function(){ setTimeout(renderAll7,140); });
+        document.addEventListener('visibilitychange',function(){ if(!document.hidden) setTimeout(renderAll7,140); });
+      })();
+    </script>
+  </body>
+</html>
